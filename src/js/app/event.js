@@ -77,6 +77,7 @@ export default class Events {
         });
     }
 
+    /* Delete Item */
     deleteEvent(){
         on(document, 'click', function(event){
             if(event.target && event.target.className === 'delete')
@@ -84,6 +85,8 @@ export default class Events {
                 if(event.target.hasAttribute("id") === true)
                 {
                     let id = event.target.getAttribute("id");
+
+                    console.log("deleted id:" + id);
 
                     if (id > -1){
                         /* DELETE */
@@ -154,4 +157,10 @@ export default class Events {
                     </li>`;
         qs(".panel .carts").insertAdjacentHTML("afterbegin", cart);        
     }
+
+    /* Delete Cart */
+    deleteCart(){
+        
+    }
+
 }

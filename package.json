@@ -1,5 +1,5 @@
 {
-  "name": "ShoppingList",
+  "name": "Shoppy",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
   },
   "description": "",
   "dependencies": {
-    "normalize.css": "^7.0.0"
+    "normalize.css": "^7.0.0",
+    "flexboxgrid": "^6.3.1"
   }
 }

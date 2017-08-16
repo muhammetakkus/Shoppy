@@ -653,6 +653,9 @@ var Events = function () {
                 }
             });
         }
+
+        /* Delete Item */
+
     }, {
         key: 'deleteEvent',
         value: function deleteEvent() {
@@ -660,6 +663,8 @@ var Events = function () {
                 if (event.target && event.target.className === 'delete') {
                     if (event.target.hasAttribute("id") === true) {
                         var id = event.target.getAttribute("id");
+
+                        console.log("deleted id:" + id);
 
                         if (id > -1) {
                             /* DELETE */
@@ -732,6 +737,12 @@ var Events = function () {
             var cart = '<li class=\'cart-item selected-cart\' cart-name=' + name + '>\n                        <span class=\'cart-text\'>' + name + '</span>\n                        <span class=\'cart-delete\'>x</span>    \n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }
+
+        /* Delete Cart */
+
+    }, {
+        key: 'deleteCart',
+        value: function deleteCart() {}
     }]);
 
     return Events;
@@ -780,27 +791,6 @@ new _menu2.default();
 
 /* Cart Processes */
 new _cart2.default();
-
-var sum = [1, 2, 3].reduce(function (total, num) {
-  return total + num;
-}, 0);
-
-//üst üste kart ekleme seçme ve üst üste to-do-item ekleme check etme vs işlemlerinde sıkıntılar var
-//bu işlemleri takip ederek yap sorunu debug et
-//cart delete and css processes
-
-/**
- * JS WORK
- * dökümantasyon
- * */
-
-/* Kaynak kodu okuma trickleri */
-/**
- * çok kullanılan düğüm noktaları bul oradan başla
- * bir library inceleyeceksen eski sürümlerinden birine git ile ulaş onu oku ~ basic halinin okumak için
- * dosya isimlerinden dosyaların bir biri ile ilişkisi düşünülebilir
- * en çok bağımlılık olan dosyalara bakılabilir
- */
 
 /***/ }),
 /* 6 */
