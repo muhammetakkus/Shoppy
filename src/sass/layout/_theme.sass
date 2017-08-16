@@ -1,0 +1,28 @@
+body
+  font-family: 'Montserrat', sans-serif
+  background: linear-gradient(#fe8f64, #E67E22) no-repeat fixed
+  @extend .user-select
+  //font-size: 1.25rem
+
+input, button, form
+  background: none
+  border: none
+  outline: none
+
+ul, li , a, h1, h2, h3, h4, h5, h6
+  padding: 0
+  margin: 0
+
+.input
+  padding: 12px
+  font-size: 18px
+  background: #fff
+  color: #555
+  border-radius: 3px
+  border: 1px solid #eee
+  width: 100%
+  box-sizing: border-box
+  @extend .box-shadow
+  &::placeholder
+    font-weight: 300
+    color: #bbb

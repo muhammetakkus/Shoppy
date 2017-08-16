@@ -1,0 +1,26 @@
+/* Variables */
+
+//theme color
+$baseColor: #AA3C3C
+//padding
+$padding: 10px
+
+/* Extend/Inheritance */
+
+//@extend .box-shadow
+.box-shadow
+  box-shadow: 1px 1px 2px 0 rgba(0,0,0,.1)
+//@extend .user-select
+.user-select
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+
+/* Mixins */
+
+//+border-radius(10px)
+=border-radius($radius)
+  border-radius: $radius
+

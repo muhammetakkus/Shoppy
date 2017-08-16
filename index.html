@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>ShoppingList</title>
+    <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+    <link rel="stylesheet" href="node_modules/flexboxgrid/dist/flexboxgrid.min.css">
+	<link rel="stylesheet" href="dist/css/main.css" />
+</head>
+<body>
+
+    <!-- Flexboxgrid'in  .row classındaki margin-right:-.5rem,margin-left:-.5rem .container içerisinde sıkıntı çıkartıyor -->
+    <!-- ya .container kullan marginleri kaldır veya .container-fluid kullan -->
+
+	<div class="wrapper">
+
+        <!-- Panel -->
+        <div class="panel hide">
+            <h3>Shopping Cart</h3>
+            <ul class="carts">
+                <!-- -->
+            </ul>
+            <div class="create-cart-wrap">
+                <p class="new-cart">
+                    <span>Create Cart</span>
+                </p>
+                <p class="cart-input-wrap">
+                    <input type="text" class="cart-input" placeholder="add new cart">
+                    <span class="add-button">+</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Header And Top Bar -->
+        <header>
+            <nav>
+                <div class="container-fluid">
+                    <div class="row center-xs">
+                        <!-- Panel Button -->
+                        <div class="col-xs-1 col-md-1 hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <!-- -->
+                        <div class="col-xs-10 col-md-11 index-header">
+                            <h4>Shopping List</h4>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- App -->
+        <section class="main">
+            <div class="container-fluid">
+                <!-- To Do List Input -->
+                <div class="row center-xs">
+                    <div class="col-xs-10">
+                        <input type="text" class="input to-do-input" placeholder="I have to buy..">
+                    </div>
+                </div>
+
+                <!-- To Do List Item List -->
+                <div class="row center-xs">
+                    <div class="col-xs-10">
+                        <ul class="to-do-list">
+                            <!-- -->
+                        </ul>
+
+                        <span class="create-cart-button-desktop">Create a Cart +</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&amp;subset=latin-ext" rel="stylesheet">
+	<script type="text/javascript" src="dist/js/bundle.js?v=1"></script>
+</body>
+</html>

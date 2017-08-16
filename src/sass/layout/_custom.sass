@@ -1,0 +1,159 @@
+/* HEADER */
+header nav
+  background: $baseColor
+
+  .hamburger
+    background: #fff
+    cursor: pointer
+    padding-top: 8px
+    span
+      border: 1px solid $baseColor
+      display: block
+      margin-bottom: 4px
+
+  .index-header
+    padding: $padding
+    h4
+      color: #fff
+      cursor: default 
+
+/* MAIN */
+section.main
+  input.to-do-input
+    margin-top: 20px
+    display: block
+
+  /* TO DO LIST */
+  ul.to-do-list
+    li
+      list-style: none
+      background: #fff
+      margin: 10px
+      font-size: 16px
+      padding: 8px 10px
+      border-radius: 2px
+      text-align: left
+      overflow: hidden
+      position: relative
+      transition: all .1s
+      @extend .box-shadow
+      span.delete
+        position: absolute
+        top: 0
+        padding: 5px 20px
+        z-index: 9999
+        color: #666
+        font-weight: 600
+        font-size: 20px
+        right: 0
+        cursor: pointer
+        display: block
+        opacity: .3
+        transition: opacity .1s
+        &:hover
+          opacity: 1
+
+      //ul.to-do-list li.check
+      &.check
+        background: #e1e1e1
+        input[type="checkbox"]:checked ~ label span.done-line
+          position: absolute
+          border: 1px solid rgba(115, 116, 111, 0.3)
+          width: calc(101% - 6px)
+          top: 50%
+          box-sizing: border-box
+          z-index: 999
+          left: -6px
+
+
+/* PANEL */
+.panel
+  background: #fff
+  position: fixed
+  top: 38px
+  left: 0
+  width: 20%
+  height: 100%
+  padding: 10px
+  z-index: 1000
+  transition: all .3s
+  h3
+    margin-bottom: 10px
+    color: $baseColor
+    border-bottom: 2px solid $baseColor
+    padding: 10px
+  ul li
+    cursor: pointer
+    font-size: 16px
+    padding: 10px
+    padding-left: 20px
+    border-radius: 2px
+    position: relative
+    color: #555
+    &:hover
+      background: #eee
+    &:before
+      content: ''
+      position: absolute
+      border: 5px solid transparent
+      border-left-color: #555
+      top: 13px
+      left: 10px
+    &.selected-cart
+      background: #cd7e43
+      color: #fff
+      &:before
+        border-left-color: #fff
+  &.hide
+    margin-left: -22%
+
+  @media all and (max-width: 960px)
+    width: 40%
+    &.hide
+      margin-left: -100%
+
+  @media all and (max-width: 667px)
+    width: 70%
+
+/* Create New Cart */
+.create-cart-wrap
+  .new-cart
+    cursor: pointer
+    background: #cd7e43
+    color: #fff
+    padding: 8px 10px
+    border-radius: 2px
+  .cart-input-wrap
+    position: relative
+    display: none
+    .cart-input
+      border: 1px solid #e1e1e1
+      border-radius: 2px
+      width: 90%
+      padding: 5px
+      box-sizing: border-box
+      &:focus
+       border-color: #009dff
+      &::placeholder
+        font-weight: 300
+        color: #bbb
+    .add-button
+      display: block
+      position: absolute
+      top: 0
+      right: 0
+      background: #cd7e43
+      color: #fff
+      padding: 6px 12px
+      border-top-right-radius: 2px
+      border-bottom-right-radius: 2px
+      cursor: pointer
+
+/**/
+.create-cart-button-desktop
+  display: block
+  padding: 10px
+  margin: 10px
+  color: #ddd
+  font-size: 18px
+  cursor: pointer
