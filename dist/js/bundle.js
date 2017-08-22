@@ -171,18 +171,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Views = new _view2.default();
 var lStore = new _localStorage2.default();
 
+//Old Data Obj
 /* let data = (lStore.get('todo')) ? JSON.parse(lStore.get('todo')):{
     todo: [],
     complated: []
 }; */
 
+//Empty Data Obj
 var item = {
     todo: [],
     complated: []
 };
 
+//All Data
 var carts = lStore.get('carts') ? JSON.parse(lStore.get('carts')) : [];
-var _cartNames = lStore.get('cartNames') ? JSON.parse(lStore.get('cartNames')) : [];
+//Cart Names
+var cartNames = lStore.get('cartNames') ? JSON.parse(lStore.get('cartNames')) : [];
+//Current Cart Name
 var currentCart = lStore.get('currentCart') ? JSON.parse(lStore.get('currentCart')) : "";
 
 var Storage = function () {
@@ -206,28 +211,69 @@ var Storage = function () {
 
             /* Add HTML Item */
             Views.addToDOM(text, false, id);
-
-            //
-            console.log(carts);
         }
     }, {
         key: 'store',
         value: function store(text) {
-            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
 
             /* if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
                 carts[indexOfCurrentCart].push(item);
             } */
 
-            console.log(carts[indexOfCurrentCart]["0"]);
-
             carts[indexOfCurrentCart]["0"].todo.push(text);
             carts[indexOfCurrentCart]["0"].complated.push(false);
 
-            console.log(carts);
-
             //sync
             this.objectCartDataLocalStorage();
+        }
+
+        /* CART */
+
+    }, {
+        key: 'createNewCart',
+        value: function createNewCart(name) {
+            var cartAvailableStatus = true;
+
+            //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
+            if (cartNames.length > 0) {
+                cartNames.map(function (e) {
+                    if (e === name) cartAvailableStatus = false; //eklenmek istenen kart isminde bir kart zaten mevcut
+                });
+            }
+
+            if (cartAvailableStatus === true) {
+                /**/
+                var newCart = Array();
+                carts.push(newCart);
+
+                /* Cart Name */
+                this.addCartName(name);
+
+                /* */
+                this.objectCartDataLocalStorage();
+
+                /* Clear to-do-list */
+                Views.clearList();
+
+                return true;
+            } else {
+                return false;
+            }
+
+            console.log(carts);
+        }
+    }, {
+        key: 'addCartName',
+        value: function addCartName(name) {
+            cartNames.push(name);
+            currentCart = name;
+
+            /* currenCart sync */
+            this.objectCurrentCartLocalStorage();
+
+            /*  cartNames[] sync */
+            this.objectCartNameLocalStorage();
         }
 
         /* Change Current Cart */
@@ -242,7 +288,7 @@ var Storage = function () {
         key: 'getAll',
         value: function getAll() {
             //return data;
-            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
 
             if (indexOfCurrentCart > -1) {
                 /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
@@ -262,7 +308,7 @@ var Storage = function () {
     }, {
         key: 'getItem',
         value: function getItem(id) {
-            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
             return carts[indexOfCurrentCart][0].todo[id];
         }
 
@@ -276,7 +322,7 @@ var Storage = function () {
         value: function updateItem(id, complated) {
             //data.complated[id] = complated;
 
-            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
             carts[indexOfCurrentCart][0].complated[id] = complated;
 
             //sync carts
@@ -295,51 +341,17 @@ var Storage = function () {
             //böylece data == localSroge oluyor
 
             //for carts data
-            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
             carts[indexOfCurrentCart][0].complated.splice(id, 1);
             carts[indexOfCurrentCart][0].todo.splice(id, 1);
 
             //sync carts
             this.objectCartDataLocalStorage();
         }
-
-        /* CART */
-
-    }, {
-        key: 'createNewCart',
-        value: function createNewCart(name) {
-            /**/
-            var newCart = Array();
-            carts.push(newCart);
-
-            /* Cart Name */
-            this.cartNames(name);
-
-            /* */
-            this.objectCartDataLocalStorage();
-
-            /* Clear to-do-list */
-            Views.clearList();
-
-            console.log(carts);
-        }
-    }, {
-        key: 'cartNames',
-        value: function cartNames(name) {
-            _cartNames.push(name);
-            currentCart = name;
-
-            /* currenCart sync */
-            this.objectCurrentCartLocalStorage();
-
-            /*  cartNames[] sync */
-            this.objectCartNameLocalStorage();
-            console.log(_cartNames);
-        }
     }, {
         key: 'getCartNames',
         value: function getCartNames() {
-            return _cartNames;
+            return cartNames;
         }
     }, {
         key: 'getCurrentCart',
@@ -350,10 +362,10 @@ var Storage = function () {
         key: 'deleteCart',
         value: function deleteCart(name) {
             //cart isimleri içerisindeki index'ini bul
-            var indexOfCart = _cartNames.indexOf(name);
+            var indexOfCart = cartNames.indexOf(name);
 
             //cart içerisinden index numarasına sahip array'i kaldır
-            _cartNames.splice(indexOfCart, 1);
+            cartNames.splice(indexOfCart, 1);
             carts.splice(indexOfCart, 1);
 
             //sync data
@@ -377,12 +389,12 @@ var Storage = function () {
             lStore.set('carts', JSON.stringify(carts));
         }
 
-        /* cartNames - set|sync todo list */
+        /* addCartName - set|sync todo list */
 
     }, {
         key: 'objectCartNameLocalStorage',
         value: function objectCartNameLocalStorage() {
-            lStore.set('cartNames', JSON.stringify(_cartNames));
+            lStore.set('cartNames', JSON.stringify(cartNames));
         }
 
         /* currentCart - set|sync */
@@ -680,6 +692,11 @@ var Events = function () {
     }, {
         key: 'selectCart',
         value: function selectCart() {
+            //bu kart sadece o anki cartları seçiyor yeni bir kart eklendiği zaman cart arrayine dahil değil
+            //her kart eklendşiğinde yeni kart bu arraya push edilebilir mi 
+            //veya yeniden seçim yapılsa cart değişkenine atılsa bu array tazelenir?
+            //Event Delegation DOM Load olduğunda zaten sayfada olan bir elementi dinleyip evet.target ile hedef elementimizse olayları gerçekleştirmekmiş (aşağıdaki gibi)
+            //sanırım en iyi event delegation dynamic ögelerde parent veya sabit olan child elementleri dinlemek
             var cart = document.querySelectorAll(".panel .carts li");
             var cartName = void 0;
             cart.forEach(function (element) {
@@ -832,7 +849,24 @@ new _cart2.default();
 /* Menu Toggle */
 new _menu2.default();
 
-//PUSH - LOCAL - storage işlemlerinde bir sorun var
+//PUSH - LOCAL storage işlemlerinde bir sorun var  
+//sayfa yenilenmeden üst üste oluşturulan kartlara bütün datayı push ediyor
+
+//eğer seçilen kart boş ise menu kapanmıyor?
+//seçili kart silindiğinde ilk karta addClass selected-cart ata
+
+/**
+ * JS WORK
+ * dökümantasyon
+ * */
+
+/* Kaynak kodu okuma trickleri */
+/**
+ * çok kullanılan düğüm noktaları bul oradan başla
+ * bir library inceleyeceksen eski sürümlerinden birine git ile ulaş onu oku ~ basic halinin okumak için
+ * dosya isimlerinden dosyaların bir biri ile ilişkisi düşünülebilir
+ * en çok bağımlılık olan dosyalara bakılabilir
+ */
 
 /***/ }),
 /* 6 */
@@ -994,18 +1028,22 @@ var Cart = function () {
 
             if (name.trim() != "") {
                 /* */
-                DB.createNewCart(name);
+                var status = DB.createNewCart(name);
+                //console.log(status);
+                if (status == true) {
+                    //remove .selected-cart class all cart
+                    document.querySelectorAll(".panel .carts li").forEach(function (item) {
+                        (0, _helpers.removeClass)(item, "selected-cart");
+                    });
 
-                //remove .selected-cart class all cart
-                document.querySelectorAll(".panel .carts li").forEach(function (item) {
-                    (0, _helpers.removeClass)(item, "selected-cart");
-                });
+                    /* Add To DOM new cart */
+                    Events.cartList(name);
 
-                /* Add To DOM new cart */
-                Events.cartList(name);
-
-                //
-                (0, _helpers.qs)(".panel").classList.add('hide');
+                    //
+                    (0, _helpers.qs)(".panel").classList.add('hide');
+                } else {
+                    console.log("bu isimde bir cart zaten mevcut");
+                }
             }
         }
     }]);

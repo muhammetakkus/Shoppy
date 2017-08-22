@@ -64,19 +64,23 @@ export default class Cart{
 
         if(name.trim() != ""){
             /* */
-            DB.createNewCart(name);
-            
-            //remove .selected-cart class all cart
-            document.querySelectorAll(".panel .carts li").forEach(function(item){
-                removeClass(item, "selected-cart");
-            });
+            let status = DB.createNewCart(name);
+            //console.log(status);
+            if(status == true){
+                //remove .selected-cart class all cart
+                document.querySelectorAll(".panel .carts li").forEach(function(item){
+                    removeClass(item, "selected-cart");
+                });
 
-            /* Add To DOM new cart */
-            Events.cartList(name);
+                /* Add To DOM new cart */
+                Events.cartList(name);
 
-            
-            //
-            qs(".panel").classList.add('hide');
+                
+                //
+                qs(".panel").classList.add('hide');
+            }else {
+                console.log("bu isimde bir cart zaten mevcut");
+            }
         }
     }
 }

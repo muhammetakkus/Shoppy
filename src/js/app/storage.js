@@ -5,18 +5,23 @@ import View from './view'
 let Views = new View();
 let lStore = new localStorage();
 
+//Old Data Obj
 /* let data = (lStore.get('todo')) ? JSON.parse(lStore.get('todo')):{
     todo: [],
     complated: []
 }; */
 
+//Empty Data Obj
 let item = {
     todo: [],
     complated: []
 };
 
+//All Data
 let carts = (lStore.get('carts')) ? JSON.parse(lStore.get('carts')):[];
+//Cart Names
 let cartNames = (lStore.get('cartNames')) ? JSON.parse(lStore.get('cartNames')):[];
+//Current Cart Name
 let currentCart = (lStore.get('currentCart')) ? JSON.parse(lStore.get('currentCart')):"";
 
 export default class Storage {
@@ -32,11 +37,7 @@ export default class Storage {
         this.store(text);
 
         /* Add HTML Item */
-        Views.addToDOM(text, false, id);
-
-
-        //
-        console.log(carts);
+        Views.addToDOM(text, false, id);        
     }
 
     store(text){
@@ -46,15 +47,55 @@ export default class Storage {
             carts[indexOfCurrentCart].push(item);
         } */
 
-        console.log(carts[indexOfCurrentCart]["0"]);
-
         carts[indexOfCurrentCart]["0"].todo.push(text);
-        carts[indexOfCurrentCart]["0"].complated.push(false);
-
-        console.log(carts);        
+        carts[indexOfCurrentCart]["0"].complated.push(false);    
         
         //sync
         this.objectCartDataLocalStorage();
+    }
+
+    /* CART */
+    createNewCart(name){
+        let cartAvailableStatus = true;
+
+        //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
+        if(cartNames.length > 0){
+            cartNames.map((e) => {
+                if(e === name)
+                    cartAvailableStatus = false //eklenmek istenen kart isminde bir kart zaten mevcut
+            });
+        }
+
+        if(cartAvailableStatus === true){
+            /**/
+            let newCart = Array();
+            carts.push(newCart);
+
+            /* Cart Name */
+            this.addCartName(name);
+
+            /* */
+            this.objectCartDataLocalStorage();
+
+            /* Clear to-do-list */
+            Views.clearList();
+
+            return true;
+        }else {
+            return false;
+        }
+
+        console.log(carts);
+    }
+    addCartName(name){
+        cartNames.push(name);
+        currentCart = name;
+
+        /* currenCart sync */
+        this.objectCurrentCartLocalStorage();
+
+        /*  cartNames[] sync */
+        this.objectCartNameLocalStorage();
     }
 
     /* Change Current Cart */
@@ -117,34 +158,7 @@ export default class Storage {
         this.objectCartDataLocalStorage();
     }
 
-    /* CART */
-    createNewCart(name){
-        /**/
-        let newCart = Array();
-        carts.push(newCart);
-
-        /* Cart Name */
-        this.cartNames(name);
-
-        /* */
-        this.objectCartDataLocalStorage();
-
-        /* Clear to-do-list */
-        Views.clearList();
-
-        console.log(carts);
-    }
-    cartNames(name){
-        cartNames.push(name);
-        currentCart = name;
-
-        /* currenCart sync */
-        this.objectCurrentCartLocalStorage();
-
-        /*  cartNames[] sync */
-        this.objectCartNameLocalStorage();
-        console.log(cartNames);
-    }
+    
     
     getCartNames(){
         return cartNames;
@@ -180,7 +194,7 @@ export default class Storage {
         lStore.set('carts', JSON.stringify(carts));
     }
 
-    /* cartNames - set|sync todo list */
+    /* addCartName - set|sync todo list */
     objectCartNameLocalStorage() {
         lStore.set('cartNames', JSON.stringify(cartNames));
     }
