@@ -169,23 +169,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Views = new _view2.default();
-
 var lStore = new _localStorage2.default();
 
-var data = lStore.get('todo') ? JSON.parse(lStore.get('todo')) : {
+/* let data = (lStore.get('todo')) ? JSON.parse(lStore.get('todo')):{
     todo: [],
     complated: []
-};
+}; */
 
 var item = {
     todo: [],
     complated: []
 };
 
-//seçili karta o anki datalar push edilecek
 var carts = lStore.get('carts') ? JSON.parse(lStore.get('carts')) : [];
-
-var _cartName = lStore.get('cartName') ? JSON.parse(lStore.get('cartName')) : [];
+var _cartNames = lStore.get('cartNames') ? JSON.parse(lStore.get('cartNames')) : [];
 var currentCart = lStore.get('currentCart') ? JSON.parse(lStore.get('currentCart')) : "";
 
 var Storage = function () {
@@ -197,7 +194,7 @@ var Storage = function () {
         key: 'addItem',
 
         /*constructor(){
-            
+            this.data;
         }*/
 
         value: function addItem(text, id) {
@@ -209,29 +206,27 @@ var Storage = function () {
 
             /* Add HTML Item */
             Views.addToDOM(text, false, id);
+
+            //
+            console.log(carts);
         }
     }, {
         key: 'store',
         value: function store(text) {
-            //aynı text varsa push edilmesin
-            var indexOfCurrentCart = _cartName.indexOf(currentCart);
+            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
 
             /* if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
                 carts[indexOfCurrentCart].push(item);
             } */
+
+            console.log(carts[indexOfCurrentCart]["0"]);
 
             carts[indexOfCurrentCart]["0"].todo.push(text);
             carts[indexOfCurrentCart]["0"].complated.push(false);
 
             console.log(carts);
 
-            //data.todo.push(text);
-            //data.complated.push(false);
-
-
             //sync
-            this.objectDataLocalStorage();
-
             this.objectCartDataLocalStorage();
         }
 
@@ -243,15 +238,11 @@ var Storage = function () {
             currentCart = newCartName;
             this.objectCurrentCartLocalStorage();
         }
-        /**
-         * @returns data
-         */
-
     }, {
         key: 'getAll',
         value: function getAll() {
             //return data;
-            var indexOfCurrentCart = _cartName.indexOf(currentCart);
+            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
 
             if (indexOfCurrentCart > -1) {
                 /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
@@ -271,24 +262,25 @@ var Storage = function () {
     }, {
         key: 'getItem',
         value: function getItem(id) {
-            return data.todo[id];
+            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
+            return carts[indexOfCurrentCart][0].todo[id];
         }
+
+        /**
+         * @param {*} id 
+         * @param {*} complated 
+         */
+
     }, {
         key: 'updateItem',
         value: function updateItem(id, complated) {
-            /* */
             //data.complated[id] = complated;
 
-            var indexOfCurrentCart = _cartName.indexOf(currentCart);
+            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
             carts[indexOfCurrentCart][0].complated[id] = complated;
-
-            //sync data obj
-            this.objectDataLocalStorage();
 
             //sync carts
             this.objectCartDataLocalStorage();
-
-            console.log(data);
         }
 
         /**
@@ -302,22 +294,13 @@ var Storage = function () {
             //her data objesi üzerinde değişiklikte bu update işlemini yapıyoruz
             //böylece data == localSroge oluyor
 
-            //for data obj
-            data.complated.splice(id, 1);
-            data.todo.splice(id, 1);
-
             //for carts data
-            var indexOfCurrentCart = _cartName.indexOf(currentCart);
+            var indexOfCurrentCart = _cartNames.indexOf(currentCart);
             carts[indexOfCurrentCart][0].complated.splice(id, 1);
             carts[indexOfCurrentCart][0].todo.splice(id, 1);
 
-            //sync data obj
-            this.objectDataLocalStorage();
-
             //sync carts
             this.objectCartDataLocalStorage();
-
-            console.log(data);
         }
 
         /* CART */
@@ -330,7 +313,7 @@ var Storage = function () {
             carts.push(newCart);
 
             /* Cart Name */
-            this.cartName(name);
+            this.cartNames(name);
 
             /* */
             this.objectCartDataLocalStorage();
@@ -341,36 +324,50 @@ var Storage = function () {
             console.log(carts);
         }
     }, {
-        key: 'cartName',
-        value: function cartName(name) {
-            _cartName.push(name);
+        key: 'cartNames',
+        value: function cartNames(name) {
+            _cartNames.push(name);
             currentCart = name;
 
             /* currenCart sync */
             this.objectCurrentCartLocalStorage();
 
-            /*  cartName[] sync */
+            /*  cartNames[] sync */
             this.objectCartNameLocalStorage();
-            console.log(_cartName);
+            console.log(_cartNames);
         }
     }, {
-        key: 'getCartName',
-        value: function getCartName() {
-            return _cartName;
+        key: 'getCartNames',
+        value: function getCartNames() {
+            return _cartNames;
         }
     }, {
         key: 'getCurrentCart',
         value: function getCurrentCart() {
             return currentCart;
         }
+    }, {
+        key: 'deleteCart',
+        value: function deleteCart(name) {
+            //cart isimleri içerisindeki index'ini bul
+            var indexOfCart = _cartNames.indexOf(name);
+
+            //cart içerisinden index numarasına sahip array'i kaldır
+            _cartNames.splice(indexOfCart, 1);
+            carts.splice(indexOfCart, 1);
+
+            //sync data
+            this.objectCartDataLocalStorage();
+            //sync cartNames 
+            this.objectCartNameLocalStorage();
+
+            return true;
+        }
 
         /* data - Local Storage Set-Update-Sync */
-
-    }, {
-        key: 'objectDataLocalStorage',
-        value: function objectDataLocalStorage() {
+        /* objectDataLocalStorage() {
             lStore.set('todo', JSON.stringify(data));
-        }
+        } */
 
         /* carts - set|sync Cart */
 
@@ -380,12 +377,12 @@ var Storage = function () {
             lStore.set('carts', JSON.stringify(carts));
         }
 
-        /* cartName - set|sync todo list */
+        /* cartNames - set|sync todo list */
 
     }, {
         key: 'objectCartNameLocalStorage',
         value: function objectCartNameLocalStorage() {
-            lStore.set('cartName', JSON.stringify(_cartName));
+            lStore.set('cartNames', JSON.stringify(_cartNames));
         }
 
         /* currentCart - set|sync */
@@ -659,7 +656,7 @@ var Events = function () {
     }, {
         key: 'deleteEvent',
         value: function deleteEvent() {
-            (0, _helpers.on)(document, 'click', function (event) {
+            (0, _helpers.on)((0, _helpers.qs)("body"), 'click', function (event) {
                 if (event.target && event.target.className === 'delete') {
                     if (event.target.hasAttribute("id") === true) {
                         var id = event.target.getAttribute("id");
@@ -686,7 +683,7 @@ var Events = function () {
             var cart = document.querySelectorAll(".panel .carts li");
             var cartName = void 0;
             cart.forEach(function (element) {
-                (0, _helpers.on)(element, 'click', function (event) {
+                (0, _helpers.on)((0, _helpers.qs)('body'), 'click', function (event) {
                     if (event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text") {
 
                         //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
@@ -696,8 +693,8 @@ var Events = function () {
                             cartName = event.target.getAttribute('cart-name');
                         }
 
-                        //
-                        cart.forEach(function (item) {
+                        //remove .selected-cart class all cart
+                        document.querySelectorAll(".panel .carts li").forEach(function (item) {
                             (0, _helpers.removeClass)(item, "selected-cart");
                         });
 
@@ -734,7 +731,7 @@ var Events = function () {
             }
 
             //
-            var cart = '<li class=\'cart-item selected-cart\' cart-name=' + name + '>\n                        <span class=\'cart-text\'>' + name + '</span>\n                        <span class=\'cart-delete\'>x</span>    \n                    </li>';
+            var cart = '<li class=\'cart-item selected-cart\' cart-name=\'' + name + '\'>\n                        <span class=\'cart-text\'>' + name + '</span>\n                        <span class=\'cart-delete\'>x</span>    \n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }
 
@@ -742,7 +739,48 @@ var Events = function () {
 
     }, {
         key: 'deleteCart',
-        value: function deleteCart() {}
+        value: function deleteCart() {
+            (0, _helpers.on)((0, _helpers.qs)("body"), 'click', function (event) {
+                if (event.target && event.target.className === 'cart-delete') {
+                    if (event.target.parentElement.hasAttribute("cart-name") === true) {
+                        var cartName = event.target.parentElement.getAttribute("cart-name");
+
+                        console.log("deleted cart:" + cartName);
+
+                        var delCart = DB.deleteCart(cartName);
+
+                        //remove in DOM
+                        if (delCart === true) {
+                            //
+                            var deletedCartElement = (0, _helpers.qs)('ul.carts li[cart-name=' + cartName + ']');
+                            deletedCartElement.remove();
+
+                            //silinen kart eğer kart yoksa boş - kart varsa ilk kartın cart-name'i alıp gönder
+                            if (DB.getCurrentCart() === cartName) {
+                                var availableCarts = DB.getCartNames();
+                                var countAvailableCarts = availableCarts.length;
+                                if (countAvailableCarts > 0) {
+                                    var newCartName = availableCarts[countAvailableCarts - 1];
+                                    DB.changeCurrentCart(newCartName);
+                                } else {
+                                    DB.changeCurrentCart("");
+                                }
+
+                                //eğer seçili kart silinirse to-do-list itemleri kaldır
+                                var toDoListParent = (0, _helpers.qs)(".to-do-list");
+                                while (toDoListParent.firstChild) {
+                                    //toDoListParent.removeChild(toDoListParent.firstChild);
+                                    toDoListParent.firstChild.remove();
+                                }
+
+                                //list new selected cart
+                                Views.listToDo(DB.getAll());
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }]);
 
     return Events;
@@ -756,6 +794,8 @@ exports.default = Events;
 
 "use strict";
 
+
+var _helpers = __webpack_require__(0);
 
 var _event = __webpack_require__(4);
 
@@ -776,21 +816,23 @@ var _menu2 = _interopRequireDefault(_menu);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* Render Storaged Data */
-//import {qs, on} from './app/helpers'
 (0, _render2.default)();
 
-/* Events */
+/* Events - bu fonkiyonlar bir classın contructerında çalıştırılsa burası daha temiz olsa?*/
 var Event = new _event2.default();
 Event.onKeyPress();
 Event.checkEvent();
 Event.deleteEvent();
+Event.deleteCart(); //?
 Event.selectCart();
+
+/* Cart Processes */
+new _cart2.default();
 
 /* Menu Toggle */
 new _menu2.default();
 
-/* Cart Processes */
-new _cart2.default();
+//PUSH - LOCAL - storage işlemlerinde bir sorun var
 
 /***/ }),
 /* 6 */
@@ -830,13 +872,14 @@ function render() {
       } */
 
     //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
-    if (DB.getCartName().length > 0) {
+    if (DB.getCartNames().length > 0) {
         (0, _helpers.qs)('.create-cart-button-desktop').style.display = 'none';
     }
 
-    //lStore.clear();
+    /* lStore.clear(); */
 
-    console.log(DB.getCartName());
+    console.log('mevcut cartlar: ' + DB.getCartNames());
+    console.log('şu anki cart: ' + DB.getCurrentCart());
     console.log(DB.getAll());
 
     /* Get and List the Data */
@@ -844,13 +887,13 @@ function render() {
     Views.listToDo(data);
 
     /* List Carts */
-    var carts = DB.getCartName();
+    var carts = DB.getCartNames();
     var currentCart = DB.getCurrentCart();
     var countCart = carts.length;
     if (countCart > 0) {
         var cart = void 0;
         carts.forEach(function (element) {
-            cart = '<li \n                        class=\'cart-item ' + (element == currentCart ? "selected-cart" : "") + '\' \n                        cart-name=' + element + '>\n                        <span class=\'cart-text\'>' + element + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
+            cart = '<li \n                        class=\'cart-item ' + (element == currentCart ? 'selected-cart' : '') + '\' \n                        cart-name=\'' + element + '\'>\n                        <span class=\'cart-text\'>' + element + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }, this);
     }
@@ -914,23 +957,7 @@ var Cart = function () {
         /* Add Cart | Add Button Click */
         (0, _helpers.on)(menuCartNameAddButton, 'click', function (e) {
             var cartName = menuCartInput.value;
-            _this.addCart(cartName);
-
-            //
-            menuCreateCartButton.style.display = "block";
-            menuCartInputWrap.style.display = "none";
-
-            //
-            menuCartInput.value = "";
-
-            //
-            (0, _helpers.qs)(".panel").classList.add('hide');
-        });
-
-        /* Add Cart | Cart Input Enter Keypress */
-        (0, _helpers.on)(menuCartInput, 'keypress', function (e) {
-            if (e.charCode === 13) {
-                var cartName = menuCartInput.value;
+            if (cartName) {
                 _this.addCart(cartName);
 
                 //
@@ -939,9 +966,23 @@ var Cart = function () {
 
                 //
                 menuCartInput.value = "";
+            }
+        });
 
-                //
-                (0, _helpers.qs)(".panel").classList.add('hide');
+        /* Add Cart | Cart Input Enter Keypress */
+        (0, _helpers.on)(menuCartInput, 'keypress', function (e) {
+            if (e.charCode === 13) {
+                var cartName = menuCartInput.value;
+                if (cartName) {
+                    _this.addCart(cartName);
+
+                    //
+                    menuCreateCartButton.style.display = "block";
+                    menuCartInputWrap.style.display = "none";
+
+                    //
+                    menuCartInput.value = "";
+                }
             }
         });
     }
@@ -949,10 +990,23 @@ var Cart = function () {
     _createClass(Cart, [{
         key: 'addCart',
         value: function addCart(name) {
-            DB.createNewCart(name);
+            //cart ismi mevcut ise zaten böyle bir kart var uyarısı ver - kontolünü yap 
 
-            /* Add To DOM new cart */
-            Events.cartList(name);
+            if (name.trim() != "") {
+                /* */
+                DB.createNewCart(name);
+
+                //remove .selected-cart class all cart
+                document.querySelectorAll(".panel .carts li").forEach(function (item) {
+                    (0, _helpers.removeClass)(item, "selected-cart");
+                });
+
+                /* Add To DOM new cart */
+                Events.cartList(name);
+
+                //
+                (0, _helpers.qs)(".panel").classList.add('hide');
+            }
         }
     }]);
 
@@ -1007,3 +1061,4 @@ exports.default = Menu;
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map

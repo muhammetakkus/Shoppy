@@ -78,8 +78,8 @@ export default class Events {
     }
 
     /* Delete Item */
-    deleteEvent(){
-        on(document, 'click', function(event){
+    deleteEvent(){       
+        on(qs("body"), 'click', function(event){
             if(event.target && event.target.className === 'delete')
             {
                 if(event.target.hasAttribute("id") === true)
@@ -105,7 +105,7 @@ export default class Events {
         let cart = document.querySelectorAll(".panel .carts li");
         let cartName;
         cart.forEach(function(element) {
-            on(element, 'click', function(event){
+            on(qs('body'), 'click', (event) => {
                 if(event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text"){
                     
                     //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
@@ -115,8 +115,8 @@ export default class Events {
                         cartName = event.target.getAttribute('cart-name');
                     }
                     
-                    //
-                    cart.forEach(function(item){
+                    //remove .selected-cart class all cart
+                    document.querySelectorAll(".panel .carts li").forEach(function(item){
                         removeClass(item, "selected-cart");
                     });
 
@@ -126,7 +126,6 @@ export default class Events {
                     }else{
                         addClass(event.target, "selected-cart");
                     }
-                    
 
                     //clear to-do-list-items
                     Views.clearList();
@@ -151,7 +150,7 @@ export default class Events {
         }
 
         //
-        let cart = `<li class='cart-item selected-cart' cart-name=${name}>
+        let cart = `<li class='cart-item selected-cart' cart-name='${name}'>
                         <span class='cart-text'>${name}</span>
                         <span class='cart-delete'>x</span>    
                     </li>`;
@@ -160,7 +159,48 @@ export default class Events {
 
     /* Delete Cart */
     deleteCart(){
-        
+        on(qs("body"), 'click', function(event){
+            if(event.target && event.target.className === 'cart-delete')
+            {
+                if(event.target.parentElement.hasAttribute("cart-name") === true)
+                {
+                    let cartName = event.target.parentElement.getAttribute("cart-name");
+
+                    console.log("deleted cart:" + cartName);
+
+                    let delCart = DB.deleteCart(cartName);
+                    
+                    //remove in DOM
+                    if(delCart === true){
+                        //
+                        let deletedCartElement = qs(`ul.carts li[cart-name=${cartName}]`);
+                        deletedCartElement.remove();
+
+                        //silinen kart eğer kart yoksa boş - kart varsa ilk kartın cart-name'i alıp gönder
+                        if(DB.getCurrentCart() === cartName){
+                            let availableCarts = DB.getCartNames();
+                            let countAvailableCarts = availableCarts.length;
+                            if(countAvailableCarts > 0){
+                                let newCartName = availableCarts[countAvailableCarts-1];
+                                DB.changeCurrentCart(newCartName);
+                            }else {
+                                DB.changeCurrentCart("");
+                            }
+
+                            //eğer seçili kart silinirse to-do-list itemleri kaldır
+                            let toDoListParent = qs(".to-do-list");
+                            while (toDoListParent.firstChild) {
+                                //toDoListParent.removeChild(toDoListParent.firstChild);
+                                toDoListParent.firstChild.remove();
+                            }
+
+                            //list new selected cart
+                            Views.listToDo(DB.getAll());
+                        }                        
+                    }
+                }
+            }
+        });
     }
 
 }

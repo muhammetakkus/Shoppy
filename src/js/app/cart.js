@@ -1,4 +1,4 @@
-import {qs, on} from './helpers'
+import {qs, on, removeClass} from './helpers'
 import Storage from './storage'
 import Event from './event'
 let Events = new Event;
@@ -27,44 +27,56 @@ export default class Cart{
         });
 
         /* Add Cart | Add Button Click */
-        on(menuCartNameAddButton, 'click', (e) => {
+        on(menuCartNameAddButton, 'click', (e) => {                
             let cartName = menuCartInput.value;
-            this.addCart(cartName);
+            if(cartName){
+                this.addCart(cartName);
 
-            //
-            menuCreateCartButton.style.display = "block";
-            menuCartInputWrap.style.display = "none";
+                //
+                menuCreateCartButton.style.display = "block";
+                menuCartInputWrap.style.display = "none";
 
-            //
-            menuCartInput.value = "";
-
-            //
-            qs(".panel").classList.add('hide');
+                //
+                menuCartInput.value = "";
+            }
         });
 
         /* Add Cart | Cart Input Enter Keypress */
         on(menuCartInput, 'keypress', (e) => {
             if (e.charCode === 13){
                 let cartName = menuCartInput.value;
-                this.addCart(cartName);
-
-                //
-                menuCreateCartButton.style.display = "block";
-                menuCartInputWrap.style.display = "none";
-                
-                //
-                menuCartInput.value = "";
-
-                //
-                qs(".panel").classList.add('hide');
+                if(cartName){
+                    this.addCart(cartName);
+                    
+                    //
+                    menuCreateCartButton.style.display = "block";
+                    menuCartInputWrap.style.display = "none";
+                    
+                    //
+                    menuCartInput.value = "";
+                }
             }
         });
     }
 
     addCart(name){
-        DB.createNewCart(name);
+        //cart ismi mevcut ise zaten böyle bir kart var uyarısı ver - kontolünü yap 
 
-        /* Add To DOM new cart */
-        Events.cartList(name);
+        if(name.trim() != ""){
+            /* */
+            DB.createNewCart(name);
+            
+            //remove .selected-cart class all cart
+            document.querySelectorAll(".panel .carts li").forEach(function(item){
+                removeClass(item, "selected-cart");
+            });
+
+            /* Add To DOM new cart */
+            Events.cartList(name);
+
+            
+            //
+            qs(".panel").classList.add('hide');
+        }
     }
 }

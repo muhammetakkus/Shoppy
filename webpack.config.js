@@ -2,6 +2,8 @@ var path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
+// htmlWebpackPlugin & commonChunkPlugin
+
 module.exports = {
     //context: '', //soruce kodların ana dizinini belirt
     entry: {
@@ -21,6 +23,7 @@ module.exports = {
       path: path.resolve(__dirname, 'dist'),
       publicPath: path.resolve(__dirname, 'dist'), //webpack out served this dir?
     },
+    devtool: 'source-map', //??
     module: {
       rules: [
         {

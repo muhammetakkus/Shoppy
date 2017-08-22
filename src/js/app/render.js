@@ -15,13 +15,14 @@ export default function render(){
     } */
 
     //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
-    if(DB.getCartName().length > 0){
+    if(DB.getCartNames().length > 0){
         qs('.create-cart-button-desktop').style.display = 'none';
     }
 
-    //lStore.clear();
-
-    console.log(DB.getCartName());
+    /* lStore.clear(); */
+    
+    console.log('mevcut cartlar: '+DB.getCartNames());
+    console.log('şu anki cart: '+DB.getCurrentCart());
     console.log(DB.getAll());
     
     /* Get and List the Data */
@@ -29,15 +30,15 @@ export default function render(){
     Views.listToDo(data);
 
     /* List Carts */
-    let carts = DB.getCartName();
+    let carts = DB.getCartNames();
     let currentCart = DB.getCurrentCart();
     let countCart = carts.length;
     if(countCart > 0){
         let cart;
         carts.forEach(function(element) {
             cart = `<li 
-                        class='cart-item ${(element == currentCart)?"selected-cart":""}' 
-                        cart-name=${element}>
+                        class='cart-item ${(element == currentCart)?'selected-cart':''}' 
+                        cart-name='${element}'>
                         <span class='cart-text'>${element}</span>
                         <span class='cart-delete'>x</span>
                     </li>`;
