@@ -102,10 +102,18 @@ export default class Events {
 
     /* Select Cart on the Panel */
     selectCart(){
+        //bu kart sadece o anki cartları seçiyor yeni bir kart eklendiği zaman cart arrayine dahil değil
+        //her kart eklendşiğinde yeni kart bu arraya push edilebilir mi 
+        //veya yeniden seçim yapılsa cart değişkenine atılsa bu array tazelenir?
+        //Event Delegation DOM Load olduğunda zaten sayfada olan bir elementi dinleyip evet.target ile hedef elementimizse olayları gerçekleştirmekmiş (aşağıdaki gibi)
+        //sanırım en iyi event delegation dynamic ögelerde parent veya sabit olan child elementleri dinlemek
         let cart = document.querySelectorAll(".panel .carts li");
+        let cartsWrapper = qs('ul.carts')
         let cartName;
-        cart.forEach(function(element) {
-            on(qs('body'), 'click', (event) => {
+        //event delegation
+        //cart.forEach(function(element) {
+            on(cartsWrapper, 'click', (event) => {
+                console.log("xx");
                 if(event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text"){
                     
                     //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
@@ -138,7 +146,7 @@ export default class Events {
                     Views.listToDo(data);
                 }
             });
-        }, this);
+        //}, this);
     }
 
     /* List Carts */
@@ -173,29 +181,38 @@ export default class Events {
                     //remove in DOM
                     if(delCart === true){
                         //
-                        let deletedCartElement = qs(`ul.carts li[cart-name=${cartName}]`);
+                        let deletedCartElement = qs(`ul.carts li[cart-name='${cartName}']`);
                         deletedCartElement.remove();
 
-                        //silinen kart eğer kart yoksa boş - kart varsa ilk kartın cart-name'i alıp gönder
+                        //silinen cart o an seçili cart ise
                         if(DB.getCurrentCart() === cartName){
+                            //get cart names
                             let availableCarts = DB.getCartNames();
                             let countAvailableCarts = availableCarts.length;
+
+                            //eğer silinen karttan sonra 1 den fazla kart kalmışsa
                             if(countAvailableCarts > 0){
+                                //son eklenen kartı currentCart yap
                                 let newCartName = availableCarts[countAvailableCarts-1];
                                 DB.changeCurrentCart(newCartName);
+
+                                //to-do-list itemleri kaldır
+                                let toDoListParent = qs(".to-do-list");
+                                while (toDoListParent.firstChild) {
+                                    //toDoListParent.removeChild(toDoListParent.firstChild);
+                                    toDoListParent.firstChild.remove();
+                                }
+
+                                //list new selected cart
+                                Views.listToDo(DB.getAll());
+
+                                
+                                
+                                //Add .selected-cart Class
+                                addClass(qs(`ul.carts li[cart-name='${DB.getCurrentCart()}']`), "selected-cart");
                             }else {
                                 DB.changeCurrentCart("");
-                            }
-
-                            //eğer seçili kart silinirse to-do-list itemleri kaldır
-                            let toDoListParent = qs(".to-do-list");
-                            while (toDoListParent.firstChild) {
-                                //toDoListParent.removeChild(toDoListParent.firstChild);
-                                toDoListParent.firstChild.remove();
-                            }
-
-                            //list new selected cart
-                            Views.listToDo(DB.getAll());
+                            }                            
                         }                        
                     }
                 }

@@ -11,7 +11,7 @@ let lStore = new localStorage();
     complated: []
 }; */
 
-//Empty Data Obj
+//Empty Data Obj - üst üste oluşturulan kartlara item push edilirken burada depolanıyordu
 let item = {
     todo: [],
     complated: []
@@ -30,101 +30,31 @@ export default class Storage {
     }*/
 
     addItem(text, id){
-        console.log(carts);
-        console.log(currentCart);
-
         /* Store  */
         this.store(text);
 
         /* Add HTML Item */
-        Views.addToDOM(text, false, id);        
+        Views.addToDOM(text, false, id);
+
+        
+    }
+
+    findCurrentCartIndex(){
+        //
     }
 
     store(text){
-        let indexOfCurrentCart = cartNames.indexOf(currentCart);
-        
-        /* if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
-            carts[indexOfCurrentCart].push(item);
-        } */
+        let indexOfCurrentCart = cartNames.indexOf(currentCart); 
 
+        //let indexOfCurrentCart = cartNames.indexOf(currentCart); 
+        
         carts[indexOfCurrentCart]["0"].todo.push(text);
         carts[indexOfCurrentCart]["0"].complated.push(false);    
         
+        
+
         //sync
         this.objectCartDataLocalStorage();
-    }
-
-    /* CART */
-    createNewCart(name){
-        let cartAvailableStatus = true;
-
-        //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
-        if(cartNames.length > 0){
-            cartNames.map((e) => {
-                if(e === name)
-                    cartAvailableStatus = false //eklenmek istenen kart isminde bir kart zaten mevcut
-            });
-        }
-
-        if(cartAvailableStatus === true){
-            /**/
-            let newCart = Array();
-            carts.push(newCart);
-
-            /* Cart Name */
-            this.addCartName(name);
-
-            /* */
-            this.objectCartDataLocalStorage();
-
-            /* Clear to-do-list */
-            Views.clearList();
-
-            return true;
-        }else {
-            return false;
-        }
-
-        console.log(carts);
-    }
-    addCartName(name){
-        cartNames.push(name);
-        currentCart = name;
-
-        /* currenCart sync */
-        this.objectCurrentCartLocalStorage();
-
-        /*  cartNames[] sync */
-        this.objectCartNameLocalStorage();
-    }
-
-    /* Change Current Cart */
-    changeCurrentCart(newCartName){
-        currentCart = newCartName;
-        this.objectCurrentCartLocalStorage();
-    }
-    
-    getAll() {
-        //return data;
-        let indexOfCurrentCart = cartNames.indexOf(currentCart);
-
-        if(indexOfCurrentCart > -1){
-            /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
-            if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
-                carts[indexOfCurrentCart].push(item);
-            }
-
-            return carts[indexOfCurrentCart][0];
-        }
-    }
-
-    /**
-     * @param id
-     * @returns {*}
-     */
-    getItem(id){
-        let indexOfCurrentCart = cartNames.indexOf(currentCart);
-        return carts[indexOfCurrentCart][0].todo[id];
     }
 
     /**
@@ -158,8 +88,79 @@ export default class Storage {
         this.objectCartDataLocalStorage();
     }
 
+    /* CART */
+    createNewCart(name){
+        let cartAvailableStatus = true;
+
+        //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
+        if(cartNames.length > 0){
+            cartNames.map((e) => {
+                if(e === name)
+                    cartAvailableStatus = false //eklenmek istenen kart isminde bir kart zaten mevcut
+            });
+        }
+
+        if(cartAvailableStatus === true){
+            /* oluşturulan yeni kart için dataların tutulduğu carts arrayında boş bir item alanı pushluyoruz */
+            /* bu cartName'in index sırasındaki carts arrayı boş kalmasın push yapılsın için */ 
+            let newCart = Array();
+            carts.push(newCart);
+
+            /* Cart Name */
+            this.addCartName(name);
+
+            /* */
+            this.objectCartDataLocalStorage();
+
+            /* Clear to-do-list */
+            Views.clearList();
+
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    addCartName(name){
+        //
+        cartNames.push(name);
+        console.log(carts);
+        //  cartNames[] sync
+        this.objectCartNameLocalStorage();
+
+        //
+        this.changeCurrentCart(name);
+    }
+
+    /* Change Current Cart */
+    changeCurrentCart(newCartName){
+        currentCart = newCartName;
+        this.objectCurrentCartLocalStorage();
+    }
     
-    
+    getAll() {
+        console.log("a");
+        let indexOfCurrentCart = cartNames.indexOf(currentCart);
+
+        if(indexOfCurrentCart > -1){
+            /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
+            if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
+                carts[indexOfCurrentCart].push({todo: [], complated: []});
+            }
+
+            return carts[indexOfCurrentCart][0];
+        }
+    }
+
+    /**
+     * @param id
+     * @returns {*}
+     */
+    getItem(id){
+        let indexOfCurrentCart = cartNames.indexOf(currentCart);
+        return carts[indexOfCurrentCart][0].todo[id];
+    }
+
     getCartNames(){
         return cartNames;
     }
@@ -174,6 +175,8 @@ export default class Storage {
         
         //cart içerisinden index numarasına sahip array'i kaldır
         cartNames.splice(indexOfCart,1)
+
+        //cart data içerisindeki arrayini kaldır
         carts.splice(indexOfCart,1)
 
         //sync data

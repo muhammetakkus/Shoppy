@@ -177,7 +177,7 @@ var lStore = new _localStorage2.default();
     complated: []
 }; */
 
-//Empty Data Obj
+//Empty Data Obj - üst üste oluşturulan kartlara item push edilirken burada depolanıyordu
 var item = {
     todo: [],
     complated: []
@@ -203,9 +203,6 @@ var Storage = function () {
         }*/
 
         value: function addItem(text, id) {
-            console.log(carts);
-            console.log(currentCart);
-
             /* Store  */
             this.store(text);
 
@@ -213,103 +210,22 @@ var Storage = function () {
             Views.addToDOM(text, false, id);
         }
     }, {
+        key: 'findCurrentCartIndex',
+        value: function findCurrentCartIndex() {
+            //
+        }
+    }, {
         key: 'store',
         value: function store(text) {
             var indexOfCurrentCart = cartNames.indexOf(currentCart);
 
-            /* if(typeof carts[indexOfCurrentCart][0] == 'undefined'){
-                carts[indexOfCurrentCart].push(item);
-            } */
+            //let indexOfCurrentCart = cartNames.indexOf(currentCart); 
 
             carts[indexOfCurrentCart]["0"].todo.push(text);
             carts[indexOfCurrentCart]["0"].complated.push(false);
 
             //sync
             this.objectCartDataLocalStorage();
-        }
-
-        /* CART */
-
-    }, {
-        key: 'createNewCart',
-        value: function createNewCart(name) {
-            var cartAvailableStatus = true;
-
-            //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
-            if (cartNames.length > 0) {
-                cartNames.map(function (e) {
-                    if (e === name) cartAvailableStatus = false; //eklenmek istenen kart isminde bir kart zaten mevcut
-                });
-            }
-
-            if (cartAvailableStatus === true) {
-                /**/
-                var newCart = Array();
-                carts.push(newCart);
-
-                /* Cart Name */
-                this.addCartName(name);
-
-                /* */
-                this.objectCartDataLocalStorage();
-
-                /* Clear to-do-list */
-                Views.clearList();
-
-                return true;
-            } else {
-                return false;
-            }
-
-            console.log(carts);
-        }
-    }, {
-        key: 'addCartName',
-        value: function addCartName(name) {
-            cartNames.push(name);
-            currentCart = name;
-
-            /* currenCart sync */
-            this.objectCurrentCartLocalStorage();
-
-            /*  cartNames[] sync */
-            this.objectCartNameLocalStorage();
-        }
-
-        /* Change Current Cart */
-
-    }, {
-        key: 'changeCurrentCart',
-        value: function changeCurrentCart(newCartName) {
-            currentCart = newCartName;
-            this.objectCurrentCartLocalStorage();
-        }
-    }, {
-        key: 'getAll',
-        value: function getAll() {
-            //return data;
-            var indexOfCurrentCart = cartNames.indexOf(currentCart);
-
-            if (indexOfCurrentCart > -1) {
-                /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
-                if (typeof carts[indexOfCurrentCart][0] == 'undefined') {
-                    carts[indexOfCurrentCart].push(item);
-                }
-
-                return carts[indexOfCurrentCart][0];
-            }
-        }
-
-        /**
-         * @param id
-         * @returns {*}
-         */
-
-    }, {
-        key: 'getItem',
-        value: function getItem(id) {
-            var indexOfCurrentCart = cartNames.indexOf(currentCart);
-            return carts[indexOfCurrentCart][0].todo[id];
         }
 
         /**
@@ -348,6 +264,89 @@ var Storage = function () {
             //sync carts
             this.objectCartDataLocalStorage();
         }
+
+        /* CART */
+
+    }, {
+        key: 'createNewCart',
+        value: function createNewCart(name) {
+            var cartAvailableStatus = true;
+
+            //eğer eklenen ilk cart değilse cart isimlerini tutan cartNa
+            if (cartNames.length > 0) {
+                cartNames.map(function (e) {
+                    if (e === name) cartAvailableStatus = false; //eklenmek istenen kart isminde bir kart zaten mevcut
+                });
+            }
+
+            if (cartAvailableStatus === true) {
+                /* oluşturulan yeni kart için dataların tutulduğu carts arrayında boş bir item alanı pushluyoruz */
+                /* bu cartName'in index sırasındaki carts arrayı boş kalmasın push yapılsın için */
+                var newCart = Array();
+                carts.push(newCart);
+
+                /* Cart Name */
+                this.addCartName(name);
+
+                /* */
+                this.objectCartDataLocalStorage();
+
+                /* Clear to-do-list */
+                Views.clearList();
+
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }, {
+        key: 'addCartName',
+        value: function addCartName(name) {
+            //
+            cartNames.push(name);
+            console.log(carts);
+            //  cartNames[] sync
+            this.objectCartNameLocalStorage();
+
+            //
+            this.changeCurrentCart(name);
+        }
+
+        /* Change Current Cart */
+
+    }, {
+        key: 'changeCurrentCart',
+        value: function changeCurrentCart(newCartName) {
+            currentCart = newCartName;
+            this.objectCurrentCartLocalStorage();
+        }
+    }, {
+        key: 'getAll',
+        value: function getAll() {
+            console.log("a");
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
+
+            if (indexOfCurrentCart > -1) {
+                /* Sadece kart oluşturulmuşsa o kartın içine boş obj push et */
+                if (typeof carts[indexOfCurrentCart][0] == 'undefined') {
+                    carts[indexOfCurrentCart].push({ todo: [], complated: [] });
+                }
+
+                return carts[indexOfCurrentCart][0];
+            }
+        }
+
+        /**
+         * @param id
+         * @returns {*}
+         */
+
+    }, {
+        key: 'getItem',
+        value: function getItem(id) {
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
+            return carts[indexOfCurrentCart][0].todo[id];
+        }
     }, {
         key: 'getCartNames',
         value: function getCartNames() {
@@ -366,6 +365,8 @@ var Storage = function () {
 
             //cart içerisinden index numarasına sahip array'i kaldır
             cartNames.splice(indexOfCart, 1);
+
+            //cart data içerisindeki arrayini kaldır
             carts.splice(indexOfCart, 1);
 
             //sync data
@@ -698,42 +699,45 @@ var Events = function () {
             //Event Delegation DOM Load olduğunda zaten sayfada olan bir elementi dinleyip evet.target ile hedef elementimizse olayları gerçekleştirmekmiş (aşağıdaki gibi)
             //sanırım en iyi event delegation dynamic ögelerde parent veya sabit olan child elementleri dinlemek
             var cart = document.querySelectorAll(".panel .carts li");
+            var cartsWrapper = (0, _helpers.qs)('ul.carts');
             var cartName = void 0;
-            cart.forEach(function (element) {
-                (0, _helpers.on)((0, _helpers.qs)('body'), 'click', function (event) {
-                    if (event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text") {
+            //event delegation
+            //cart.forEach(function(element) {
+            (0, _helpers.on)(cartsWrapper, 'click', function (event) {
+                console.log("xx");
+                if (event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text") {
 
-                        //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
-                        if (event.target.className == "cart-text") {
-                            cartName = event.target.parentElement.getAttribute('cart-name');
-                        } else {
-                            cartName = event.target.getAttribute('cart-name');
-                        }
-
-                        //remove .selected-cart class all cart
-                        document.querySelectorAll(".panel .carts li").forEach(function (item) {
-                            (0, _helpers.removeClass)(item, "selected-cart");
-                        });
-
-                        //tıklanan eğer span.cart-text ise parent li'sine select-cart class'ını ata
-                        if (event.target.className == "cart-text") {
-                            (0, _helpers.addClass)(event.target.parentElement, "selected-cart");
-                        } else {
-                            (0, _helpers.addClass)(event.target, "selected-cart");
-                        }
-
-                        //clear to-do-list-items
-                        Views.clearList();
-
-                        //currentCart'ı seçilen ile değiştir
-                        DB.changeCurrentCart(cartName);
-
-                        /* Yeni listeyi al ve listele */
-                        var data = DB.getAll();
-                        Views.listToDo(data);
+                    //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
+                    if (event.target.className == "cart-text") {
+                        cartName = event.target.parentElement.getAttribute('cart-name');
+                    } else {
+                        cartName = event.target.getAttribute('cart-name');
                     }
-                });
-            }, this);
+
+                    //remove .selected-cart class all cart
+                    document.querySelectorAll(".panel .carts li").forEach(function (item) {
+                        (0, _helpers.removeClass)(item, "selected-cart");
+                    });
+
+                    //tıklanan eğer span.cart-text ise parent li'sine select-cart class'ını ata
+                    if (event.target.className == "cart-text") {
+                        (0, _helpers.addClass)(event.target.parentElement, "selected-cart");
+                    } else {
+                        (0, _helpers.addClass)(event.target, "selected-cart");
+                    }
+
+                    //clear to-do-list-items
+                    Views.clearList();
+
+                    //currentCart'ı seçilen ile değiştir
+                    DB.changeCurrentCart(cartName);
+
+                    /* Yeni listeyi al ve listele */
+                    var data = DB.getAll();
+                    Views.listToDo(data);
+                }
+            });
+            //}, this);
         }
 
         /* List Carts */
@@ -769,29 +773,36 @@ var Events = function () {
                         //remove in DOM
                         if (delCart === true) {
                             //
-                            var deletedCartElement = (0, _helpers.qs)('ul.carts li[cart-name=' + cartName + ']');
+                            var deletedCartElement = (0, _helpers.qs)('ul.carts li[cart-name=\'' + cartName + '\']');
                             deletedCartElement.remove();
 
-                            //silinen kart eğer kart yoksa boş - kart varsa ilk kartın cart-name'i alıp gönder
+                            //silinen cart o an seçili cart ise
                             if (DB.getCurrentCart() === cartName) {
+                                //get cart names
                                 var availableCarts = DB.getCartNames();
                                 var countAvailableCarts = availableCarts.length;
+
+                                //eğer silinen karttan sonra 1 den fazla kart kalmışsa
                                 if (countAvailableCarts > 0) {
+                                    //son eklenen kartı currentCart yap
                                     var newCartName = availableCarts[countAvailableCarts - 1];
                                     DB.changeCurrentCart(newCartName);
+
+                                    //to-do-list itemleri kaldır
+                                    var toDoListParent = (0, _helpers.qs)(".to-do-list");
+                                    while (toDoListParent.firstChild) {
+                                        //toDoListParent.removeChild(toDoListParent.firstChild);
+                                        toDoListParent.firstChild.remove();
+                                    }
+
+                                    //list new selected cart
+                                    Views.listToDo(DB.getAll());
+
+                                    //Add .selected-cart Class
+                                    (0, _helpers.addClass)((0, _helpers.qs)('ul.carts li[cart-name=\'' + DB.getCurrentCart() + '\']'), "selected-cart");
                                 } else {
                                     DB.changeCurrentCart("");
                                 }
-
-                                //eğer seçili kart silinirse to-do-list itemleri kaldır
-                                var toDoListParent = (0, _helpers.qs)(".to-do-list");
-                                while (toDoListParent.firstChild) {
-                                    //toDoListParent.removeChild(toDoListParent.firstChild);
-                                    toDoListParent.firstChild.remove();
-                                }
-
-                                //list new selected cart
-                                Views.listToDo(DB.getAll());
                             }
                         }
                     }
@@ -849,11 +860,14 @@ new _cart2.default();
 /* Menu Toggle */
 new _menu2.default();
 
-//PUSH - LOCAL storage işlemlerinde bir sorun var  
-//sayfa yenilenmeden üst üste oluşturulan kartlara bütün datayı push ediyor
-
+//cart eklendiği zaman Create Cart butonu ekrandan kalksın
 //eğer seçilen kart boş ise menu kapanmıyor?
-//seçili kart silindiğinde ilk karta addClass selected-cart ata
+//menuye tekrar bakılacak
+//son kart silindiği zaman itemleri kaldırılmıyor
+//yeni cart oluşturulduğunda menu kapanıp input.focus olsun - focus ayrı bir func olsun
+//redesign
+
+//bu storage daki getAll nereden nasıl çalışıyor sayfa açılışında?
 
 /**
  * JS WORK
