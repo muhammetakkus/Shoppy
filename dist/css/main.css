@@ -2,7 +2,7 @@
 /* Variables */
 /* Extend/Inheritance */
 .box-shadow, .input, section.main ul.to-do-list li {
-  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.1); }
+  box-shadow: 2px 3px 2px 0px rgba(0, 0, 0, 0.2); }
 
 .user-select, body {
   -webkit-user-select: none;
@@ -42,12 +42,11 @@
 /* checked mark aspect */
 [type="checkbox"]:not(:checked) + label:after,
 [type="checkbox"]:checked + label:after {
-  content: '\2714';
+  content: '\2718';
   position: absolute;
-  top: .1em;
+  top: .05em;
   left: .19em;
   font-size: 1.3em;
-  font-weight: 600;
   line-height: 0.9;
   color: #f95d41;
   transition: all .1s; }
@@ -63,7 +62,7 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background: linear-gradient(#fe8f64, #E67E22) no-repeat fixed; }
+  background: rgba(121, 121, 154, 0.93); }
 
 input, button, form {
   background: none;
@@ -89,13 +88,13 @@ ul, li, a, h1, h2, h3, h4, h5, h6 {
 
 /* HEADER */
 header nav {
-  background: #AA3C3C; }
+  background: #de0859; }
   header nav .hamburger {
     background: #fff;
     cursor: pointer;
     padding-top: 8px; }
     header nav .hamburger span {
-      border: 1px solid #AA3C3C;
+      border: 1px solid #de0859;
       display: block;
       margin-bottom: 4px; }
   header nav .index-header {
@@ -107,16 +106,29 @@ header nav {
 /* MAIN */
 section.main {
   /* TO DO LIST */ }
-  section.main input.to-do-input {
-    margin-top: 20px;
-    display: block; }
+  section.main .to-do-input-wrapper {
+    position: relative;
+    margin-top: 20px; }
+    section.main .to-do-input-wrapper input.to-do-input {
+      display: block; }
+    section.main .to-do-input-wrapper button {
+      position: absolute;
+      top: -3px;
+      right: -12px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: #de0859;
+      color: #fff;
+      font-size: 36px; }
   section.main ul.to-do-list li {
     list-style: none;
     background: #fff;
     margin: 10px;
     font-size: 16px;
     padding: 8px 10px;
-    border-radius: 2px;
+    border-radius: 3px;
     text-align: left;
     overflow: hidden;
     position: relative;
@@ -137,7 +149,7 @@ section.main {
       section.main ul.to-do-list li span.delete:hover {
         opacity: 1; }
     section.main ul.to-do-list li.check {
-      background: #e1e1e1; }
+      background: #e3e3e3; }
       section.main ul.to-do-list li.check input[type="checkbox"]:checked ~ label span.done-line {
         position: absolute;
         border: 1px solid rgba(115, 116, 111, 0.3);
@@ -148,7 +160,7 @@ section.main {
         left: -6px; }
 
 span.text {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(0, 0, 0, 0.3);
   display: block;
   margin: 10px; }
   span.text.hide {
@@ -167,8 +179,8 @@ span.text {
   transition: all .3s; }
   .panel h3 {
     margin-bottom: 10px;
-    color: #AA3C3C;
-    border-bottom: 2px solid #AA3C3C;
+    color: #de0859;
+    border-bottom: 2px solid #de0859;
     padding: 10px; }
   .panel ul li {
     cursor: pointer;
@@ -242,7 +254,7 @@ span.text {
   display: block;
   padding: 10px;
   margin: 10px;
-  color: #ddd;
+  color: rgba(0, 0, 0, 0.3);
   font-size: 18px;
   cursor: pointer; }
 

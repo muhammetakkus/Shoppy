@@ -9,10 +9,16 @@ render();
 
 /* Events - bu fonkiyonlar bir classın constructerında çalıştırılsa burası daha temiz olsa?*/
 let Event = new Events();
+/* Add Item */
 Event.onKeyPress();
+Event.addButtonClick();
+/* Check Item */
 Event.checkEvent();
+/* Delete Item */
 Event.deleteEvent();
+/* Delete Cart */
 Event.deleteCart();
+/* Select Another Cart */
 Event.selectCart();
 
 /* Cart Processes */

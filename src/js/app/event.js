@@ -6,6 +6,7 @@ let DB = new Storage();
 let Views = new View();
 
 let input = qs(".to-do-input");
+let addButton = qs(".to-do-input-wrapper button");
 
 export default class Events {
     onKeyPress(){
@@ -37,24 +38,26 @@ export default class Events {
     }
 
     addButtonClick(){
-        /* Get to-do Value */
-        let toDoValue = input.value;
-
-        if (toDoValue != "")
-        {
-            /* LAST ID */
-            let data = storage.list();
-            let id = data.todo.length;
-            
-            /* INSERT */
-            DB.addItem(toDoValue, id);
-
-            input.value = '';
-
-            //
-            if(qs("span.text") != null) 
-                qs("span.text").classList.add('hide');
-        }
+        on(addButton, 'click', function(){
+            /* Get to-do Value */
+            let toDoValue = input.value;
+        
+            if (toDoValue != "")
+            {
+                /* LAST ID */
+                let data = DB.getAll();
+                let id = data.todo.length;
+                
+                /* INSERT */
+                DB.addItem(toDoValue, id);
+    
+                input.value = '';
+    
+                //
+                if(qs("span.text") != null) 
+                    qs("span.text").classList.add('hide');
+            }
+        });
     }
     
     checkEvent(){

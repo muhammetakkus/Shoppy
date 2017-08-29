@@ -618,6 +618,7 @@ var DB = new _storage2.default();
 var Views = new _view2.default();
 
 var input = (0, _helpers.qs)(".to-do-input");
+var addButton = (0, _helpers.qs)(".to-do-input-wrapper button");
 
 var Events = function () {
     function Events() {
@@ -654,22 +655,24 @@ var Events = function () {
     }, {
         key: 'addButtonClick',
         value: function addButtonClick() {
-            /* Get to-do Value */
-            var toDoValue = input.value;
+            (0, _helpers.on)(addButton, 'click', function () {
+                /* Get to-do Value */
+                var toDoValue = input.value;
 
-            if (toDoValue != "") {
-                /* LAST ID */
-                var data = storage.list();
-                var id = data.todo.length;
+                if (toDoValue != "") {
+                    /* LAST ID */
+                    var data = DB.getAll();
+                    var id = data.todo.length;
 
-                /* INSERT */
-                DB.addItem(toDoValue, id);
+                    /* INSERT */
+                    DB.addItem(toDoValue, id);
 
-                input.value = '';
+                    input.value = '';
 
-                //
-                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
-            }
+                    //
+                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
+                }
+            });
         }
     }, {
         key: 'checkEvent',
@@ -904,10 +907,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /* Events - bu fonkiyonlar bir classın constructerında çalıştırılsa burası daha temiz olsa?*/
 var Event = new _event2.default();
+/* Add Item */
 Event.onKeyPress();
+Event.addButtonClick();
+/* Check Item */
 Event.checkEvent();
+/* Delete Item */
 Event.deleteEvent();
+/* Delete Cart */
 Event.deleteCart();
+/* Select Another Cart */
 Event.selectCart();
 
 /* Cart Processes */
