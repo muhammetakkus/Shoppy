@@ -210,19 +210,20 @@ var Storage = function () {
             Views.addToDOM(text, false, id);
         }
     }, {
-        key: 'findCurrentCartIndex',
-        value: function findCurrentCartIndex() {
-            //
+        key: 'getCurrentCartIndex',
+        value: function getCurrentCartIndex() {
+            var indexOfCurrentCart = cartNames.indexOf(currentCart);
+            return indexOfCurrentCart;
         }
     }, {
         key: 'store',
         value: function store(text) {
-            var indexOfCurrentCart = cartNames.indexOf(currentCart);
+            //getCurrentCartIndex
+            var getCurrentCartIndex = this.getCurrentCartIndex();
 
-            //let indexOfCurrentCart = cartNames.indexOf(currentCart); 
-
-            carts[indexOfCurrentCart]["0"].todo.push(text);
-            carts[indexOfCurrentCart]["0"].complated.push(false);
+            //store
+            carts[getCurrentCartIndex][0].todo.push(text);
+            carts[getCurrentCartIndex][0].complated.push(false);
 
             //sync
             this.objectCartDataLocalStorage();
@@ -323,7 +324,7 @@ var Storage = function () {
     }, {
         key: 'getAll',
         value: function getAll() {
-            console.log("a");
+            //console.log("a");
             var indexOfCurrentCart = cartNames.indexOf(currentCart);
 
             if (indexOfCurrentCart > -1) {
@@ -537,20 +538,46 @@ var View = function () {
     }, {
         key: 'listToDo',
         value: function listToDo(data) {
+            //
+            (0, _helpers.qs)(".panel").classList.add('hide');
+
+            //
             if (typeof data !== 'undefined') {
                 var count = data.todo.length;
 
-                for (var i = 0; i < count; i++) {
-                    /* */
-                    var val = data.todo[i];
-                    var complate = data.complated[i];
+                if (count > 0) {
+                    for (var i = 0; i < count; i++) {
+                        /* */
+                        var val = data.todo[i];
+                        var complate = data.complated[i];
 
-                    /* List New Cart's Items*/
-                    this.addToDOM(val, complate, i);
+                        /* List New Cart's Items*/
+                        this.addToDOM(val, complate, i);
+                    }
 
                     //
-                    (0, _helpers.qs)(".panel").classList.add('hide');
+                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
+                } else {
+                    //
+                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
                 }
+            } else {
+                //
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
+            }
+        }
+
+        /**
+         * @param string status add || remove - cartta item durumu için uyarı mesajının ekle/kaldır durumunu ayarlamak için
+         */
+
+    }, {
+        key: 'itSeemsEmpty',
+        value: function itSeemsEmpty(status) {
+            if (status === "add") {
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
+            } else if (status === "remove") {
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
             }
         }
     }]);
@@ -615,6 +642,9 @@ var Events = function () {
                         DB.addItem(toDoValue, id);
 
                         input.value = '';
+
+                        //
+                        if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
                     }
                 }
 
@@ -636,6 +666,9 @@ var Events = function () {
                 DB.addItem(toDoValue, id);
 
                 input.value = '';
+
+                //
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
             }
         }
     }, {
@@ -669,7 +702,8 @@ var Events = function () {
     }, {
         key: 'deleteEvent',
         value: function deleteEvent() {
-            (0, _helpers.on)((0, _helpers.qs)("body"), 'click', function (event) {
+            var toDoWrapper = (0, _helpers.qs)('.to-do-list');
+            (0, _helpers.on)(toDoWrapper, 'click', function (event) {
                 if (event.target && event.target.className === 'delete') {
                     if (event.target.hasAttribute("id") === true) {
                         var id = event.target.getAttribute("id");
@@ -682,6 +716,10 @@ var Events = function () {
 
                             //remove element
                             event.target.parentElement.remove();
+
+                            //It seems empty
+                            var say = DB.getAll().todo.length;
+                            if (say < 1) if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
                         }
                     }
                 }
@@ -693,28 +731,23 @@ var Events = function () {
     }, {
         key: 'selectCart',
         value: function selectCart() {
-            //bu kart sadece o anki cartları seçiyor yeni bir kart eklendiği zaman cart arrayine dahil değil
-            //her kart eklendşiğinde yeni kart bu arraya push edilebilir mi 
-            //veya yeniden seçim yapılsa cart değişkenine atılsa bu array tazelenir?
-            //Event Delegation DOM Load olduğunda zaten sayfada olan bir elementi dinleyip evet.target ile hedef elementimizse olayları gerçekleştirmekmiş (aşağıdaki gibi)
-            //sanırım en iyi event delegation dynamic ögelerde parent veya sabit olan child elementleri dinlemek
             var cart = document.querySelectorAll(".panel .carts li");
             var cartsWrapper = (0, _helpers.qs)('ul.carts');
             var cartName = void 0;
+
             //event delegation
             //cart.forEach(function(element) {
             (0, _helpers.on)(cartsWrapper, 'click', function (event) {
-                console.log("xx");
                 if (event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text") {
 
-                    //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
+                    //eğer tıklanan .cart-text ise cartName'i almak için parent li'ye ulaş
                     if (event.target.className == "cart-text") {
                         cartName = event.target.parentElement.getAttribute('cart-name');
                     } else {
                         cartName = event.target.getAttribute('cart-name');
                     }
 
-                    //remove .selected-cart class all cart
+                    //remove .selected-cart class from all cards which have .selected-cart class
                     document.querySelectorAll(".panel .carts li").forEach(function (item) {
                         (0, _helpers.removeClass)(item, "selected-cart");
                     });
@@ -768,6 +801,7 @@ var Events = function () {
 
                         console.log("deleted cart:" + cartName);
 
+                        //
                         var delCart = DB.deleteCart(cartName);
 
                         //remove in DOM
@@ -778,9 +812,12 @@ var Events = function () {
 
                             //silinen cart o an seçili cart ise
                             if (DB.getCurrentCart() === cartName) {
-                                //get cart names
+                                //get all cart names
                                 var availableCarts = DB.getCartNames();
                                 var countAvailableCarts = availableCarts.length;
+
+                                //clear old to-do-items
+                                Views.clearList();
 
                                 //eğer silinen karttan sonra 1 den fazla kart kalmışsa
                                 if (countAvailableCarts > 0) {
@@ -788,19 +825,19 @@ var Events = function () {
                                     var newCartName = availableCarts[countAvailableCarts - 1];
                                     DB.changeCurrentCart(newCartName);
 
-                                    //to-do-list itemleri kaldır
-                                    var toDoListParent = (0, _helpers.qs)(".to-do-list");
-                                    while (toDoListParent.firstChild) {
-                                        //toDoListParent.removeChild(toDoListParent.firstChild);
-                                        toDoListParent.firstChild.remove();
-                                    }
-
                                     //list new selected cart
                                     Views.listToDo(DB.getAll());
 
                                     //Add .selected-cart Class
                                     (0, _helpers.addClass)((0, _helpers.qs)('ul.carts li[cart-name=\'' + DB.getCurrentCart() + '\']'), "selected-cart");
                                 } else {
+                                    //
+                                    (0, _helpers.qs)('.create-cart-button-desktop').style.display = 'block';
+
+                                    //remove It seems empty
+                                    Views.itSeemsEmpty("remove");
+
+                                    //
                                     DB.changeCurrentCart("");
                                 }
                             }
@@ -808,6 +845,25 @@ var Events = function () {
                     }
                 }
             });
+        }
+    }, {
+        key: 'inputFocus',
+        value: function inputFocus(element) {
+            var menuCartInput = (0, _helpers.qs)(element);
+            menuCartInput.focus();
+        }
+
+        /**
+         * @param string item direkt olarak seçilmemiş tag ismini alır - kaldırılacak olan selectorü ister
+         */
+
+    }, {
+        key: 'removeAll',
+        value: function removeAll(item) {
+            var parentOfTheElementToBeRemoved = document.querySelector(item).parentElement;
+            while (parentOfTheElementToBeRemoved.firstChild) {
+                parentOfTheElementToBeRemoved.firstChild.remove();
+            }
         }
     }]);
 
@@ -851,7 +907,7 @@ var Event = new _event2.default();
 Event.onKeyPress();
 Event.checkEvent();
 Event.deleteEvent();
-Event.deleteCart(); //?
+Event.deleteCart();
 Event.selectCart();
 
 /* Cart Processes */
@@ -859,28 +915,6 @@ new _cart2.default();
 
 /* Menu Toggle */
 new _menu2.default();
-
-//cart eklendiği zaman Create Cart butonu ekrandan kalksın
-//eğer seçilen kart boş ise menu kapanmıyor?
-//menuye tekrar bakılacak
-//son kart silindiği zaman itemleri kaldırılmıyor
-//yeni cart oluşturulduğunda menu kapanıp input.focus olsun - focus ayrı bir func olsun
-//redesign
-
-//bu storage daki getAll nereden nasıl çalışıyor sayfa açılışında?
-
-/**
- * JS WORK
- * dökümantasyon
- * */
-
-/* Kaynak kodu okuma trickleri */
-/**
- * çok kullanılan düğüm noktaları bul oradan başla
- * bir library inceleyeceksen eski sürümlerinden birine git ile ulaş onu oku ~ basic halinin okumak için
- * dosya isimlerinden dosyaların bir biri ile ilişkisi düşünülebilir
- * en çok bağımlılık olan dosyalara bakılabilir
- */
 
 /***/ }),
 /* 6 */
@@ -932,6 +966,7 @@ function render() {
 
     /* Get and List the Data */
     var data = DB.getAll();
+    console.log(data);
     Views.listToDo(data);
 
     /* List Carts */
@@ -966,6 +1001,10 @@ var _storage = __webpack_require__(1);
 
 var _storage2 = _interopRequireDefault(_storage);
 
+var _view = __webpack_require__(3);
+
+var _view2 = _interopRequireDefault(_view);
+
 var _event = __webpack_require__(4);
 
 var _event2 = _interopRequireDefault(_event);
@@ -976,6 +1015,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Events = new _event2.default();
 var DB = new _storage2.default();
+var Views = new _view2.default();
 
 var menuCreateCartButton = (0, _helpers.qs)('.create-cart-wrap .new-cart');
 var menuCartInputWrap = (0, _helpers.qs)('.create-cart-wrap .cart-input-wrap');
@@ -1053,7 +1093,16 @@ var Cart = function () {
                     /* Add To DOM new cart */
                     Events.cartList(name);
 
-                    //
+                    //yeni kart oluşturulunca Desktoptan create cart butonu kalksın
+                    (0, _helpers.qs)('.create-cart-button-desktop').style.display = 'none';
+
+                    //add It seems empty
+                    Views.itSeemsEmpty("add");
+
+                    //Focus Input
+                    Events.inputFocus(".to-do-input");
+
+                    //hide sidebar
                     (0, _helpers.qs)(".panel").classList.add('hide');
                 } else {
                     console.log("bu isimde bir cart zaten mevcut");

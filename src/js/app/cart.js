@@ -1,8 +1,11 @@
 import {qs, on, removeClass} from './helpers'
 import Storage from './storage'
+import View from './view'
 import Event from './event'
+
 let Events = new Event;
 let DB = new Storage;
+let Views = new View;
 
 
 let menuCreateCartButton = qs('.create-cart-wrap .new-cart');
@@ -71,12 +74,20 @@ export default class Cart{
                 document.querySelectorAll(".panel .carts li").forEach(function(item){
                     removeClass(item, "selected-cart");
                 });
-
+                
                 /* Add To DOM new cart */
                 Events.cartList(name);
 
+                //yeni kart oluşturulunca Desktoptan create cart butonu kalksın
+                qs('.create-cart-button-desktop').style.display = 'none';
+
+                //add It seems empty
+                Views.itSeemsEmpty("add");
+
+                //Focus Input
+                Events.inputFocus(".to-do-input");
                 
-                //
+                //hide sidebar
                 qs(".panel").classList.add('hide');
             }else {
                 console.log("bu isimde bir cart zaten mevcut");

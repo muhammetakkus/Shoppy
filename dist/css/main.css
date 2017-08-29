@@ -147,6 +147,13 @@ section.main {
         z-index: 999;
         left: -6px; }
 
+span.text {
+  color: rgba(255, 255, 255, 0.72);
+  display: block;
+  margin: 10px; }
+  span.text.hide {
+    display: none; }
+
 /* PANEL */
 .panel {
   background: #fff;

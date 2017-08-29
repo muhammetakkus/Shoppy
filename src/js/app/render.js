@@ -27,6 +27,7 @@ export default function render(){
     
     /* Get and List the Data */
     let data = DB.getAll();
+    console.log(data);
     Views.listToDo(data);
 
     /* List Carts */

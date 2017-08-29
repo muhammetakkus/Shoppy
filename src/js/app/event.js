@@ -24,6 +24,10 @@ export default class Events {
                     DB.addItem(toDoValue, id);
 
                     input.value = '';
+
+                    //
+                    if(qs("span.text") != null) 
+                        qs("span.text").classList.add('hide');
                 }
             }
 
@@ -46,6 +50,10 @@ export default class Events {
             DB.addItem(toDoValue, id);
 
             input.value = '';
+
+            //
+            if(qs("span.text") != null) 
+                qs("span.text").classList.add('hide');
         }
     }
     
@@ -79,7 +87,8 @@ export default class Events {
 
     /* Delete Item */
     deleteEvent(){       
-        on(qs("body"), 'click', function(event){
+        let toDoWrapper = qs('.to-do-list');
+        on(toDoWrapper, 'click', function(event){
             if(event.target && event.target.className === 'delete')
             {
                 if(event.target.hasAttribute("id") === true)
@@ -94,6 +103,11 @@ export default class Events {
 
                         //remove element
                         event.target.parentElement.remove();
+                        
+                        //It seems empty
+                        let say = DB.getAll().todo.length;
+                        if(say < 1)
+                            if(qs("span.text") != null) qs("span.text").classList.remove('hide');                    
                     }
                 }
             }
@@ -102,28 +116,23 @@ export default class Events {
 
     /* Select Cart on the Panel */
     selectCart(){
-        //bu kart sadece o anki cartları seçiyor yeni bir kart eklendiği zaman cart arrayine dahil değil
-        //her kart eklendşiğinde yeni kart bu arraya push edilebilir mi 
-        //veya yeniden seçim yapılsa cart değişkenine atılsa bu array tazelenir?
-        //Event Delegation DOM Load olduğunda zaten sayfada olan bir elementi dinleyip evet.target ile hedef elementimizse olayları gerçekleştirmekmiş (aşağıdaki gibi)
-        //sanırım en iyi event delegation dynamic ögelerde parent veya sabit olan child elementleri dinlemek
         let cart = document.querySelectorAll(".panel .carts li");
         let cartsWrapper = qs('ul.carts')
         let cartName;
+
         //event delegation
         //cart.forEach(function(element) {
             on(cartsWrapper, 'click', (event) => {
-                console.log("xx");
                 if(event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text"){
                     
-                    //eğer tıklanan cart-text ise cartName'i almak için parent li'ye ulaş
+                    //eğer tıklanan .cart-text ise cartName'i almak için parent li'ye ulaş
                     if(event.target.className == "cart-text"){
                         cartName = event.target.parentElement.getAttribute('cart-name');
                     }else{
                         cartName = event.target.getAttribute('cart-name');
                     }
                     
-                    //remove .selected-cart class all cart
+                    //remove .selected-cart class from all cards which have .selected-cart class
                     document.querySelectorAll(".panel .carts li").forEach(function(item){
                         removeClass(item, "selected-cart");
                     });
@@ -176,6 +185,7 @@ export default class Events {
 
                     console.log("deleted cart:" + cartName);
 
+                    //
                     let delCart = DB.deleteCart(cartName);
                     
                     //remove in DOM
@@ -186,33 +196,34 @@ export default class Events {
 
                         //silinen cart o an seçili cart ise
                         if(DB.getCurrentCart() === cartName){
-                            //get cart names
+                            //get all cart names
                             let availableCarts = DB.getCartNames();
                             let countAvailableCarts = availableCarts.length;
 
+                            //clear old to-do-items
+                            Views.clearList();
+                            
                             //eğer silinen karttan sonra 1 den fazla kart kalmışsa
                             if(countAvailableCarts > 0){
                                 //son eklenen kartı currentCart yap
                                 let newCartName = availableCarts[countAvailableCarts-1];
                                 DB.changeCurrentCart(newCartName);
 
-                                //to-do-list itemleri kaldır
-                                let toDoListParent = qs(".to-do-list");
-                                while (toDoListParent.firstChild) {
-                                    //toDoListParent.removeChild(toDoListParent.firstChild);
-                                    toDoListParent.firstChild.remove();
-                                }
-
                                 //list new selected cart
                                 Views.listToDo(DB.getAll());
-
-                                
                                 
                                 //Add .selected-cart Class
                                 addClass(qs(`ul.carts li[cart-name='${DB.getCurrentCart()}']`), "selected-cart");
                             }else {
+                                //
+                                qs('.create-cart-button-desktop').style.display = 'block';
+                                
+                                //remove It seems empty
+                                Views.itSeemsEmpty("remove");
+
+                                //
                                 DB.changeCurrentCart("");
-                            }                            
+                            }  
                         }                        
                     }
                 }
@@ -220,4 +231,20 @@ export default class Events {
         });
     }
 
+    
+
+    inputFocus(element){
+        let menuCartInput = qs(element);
+        menuCartInput.focus();
+    }
+
+    /**
+     * @param string item direkt olarak seçilmemiş tag ismini alır - kaldırılacak olan selectorü ister
+     */
+    removeAll(item){
+        let parentOfTheElementToBeRemoved = document.querySelector(item).parentElement;
+        while (parentOfTheElementToBeRemoved.firstChild) {
+            parentOfTheElementToBeRemoved.firstChild.remove();
+        }
+    }
 }

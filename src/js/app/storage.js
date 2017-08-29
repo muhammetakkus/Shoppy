@@ -39,20 +39,19 @@ export default class Storage {
         
     }
 
-    findCurrentCartIndex(){
-        //
-    }
+    getCurrentCartIndex(){
+        let indexOfCurrentCart = cartNames.indexOf(currentCart); 
+        return indexOfCurrentCart;
+    } 
 
     store(text){
-        let indexOfCurrentCart = cartNames.indexOf(currentCart); 
+        //getCurrentCartIndex
+        let getCurrentCartIndex = this.getCurrentCartIndex();
 
-        //let indexOfCurrentCart = cartNames.indexOf(currentCart); 
+        //store
+        carts[getCurrentCartIndex][0].todo.push(text);
+        carts[getCurrentCartIndex][0].complated.push(false);    
         
-        carts[indexOfCurrentCart]["0"].todo.push(text);
-        carts[indexOfCurrentCart]["0"].complated.push(false);    
-        
-        
-
         //sync
         this.objectCartDataLocalStorage();
     }
@@ -139,7 +138,7 @@ export default class Storage {
     }
     
     getAll() {
-        console.log("a");
+        //console.log("a");
         let indexOfCurrentCart = cartNames.indexOf(currentCart);
 
         if(indexOfCurrentCart > -1){

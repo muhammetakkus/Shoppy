@@ -1,5 +1,5 @@
 
-import {qs,on} from './helpers'
+import {qs,on,addClass} from './helpers'
 import localStorage from './localStorage'
 
 
@@ -42,21 +42,47 @@ export default class View {
 
     /* Gelen To-Do objesini listeler */
     listToDo(data){
+        //
+        qs(".panel").classList.add('hide');
+
+        //
         if(typeof data !== 'undefined'){
             let count = data.todo.length;
-    
-            for (let i = 0; i < count; i++){
-                /* */
-                let val = data.todo[i];
-                let complate = data.complated[i];
-    
-                /* List New Cart's Items*/
-                this.addToDOM(val, complate, i);
+
+            if(count > 0){
+                for (let i = 0; i < count; i++){
+                    /* */
+                    let val = data.todo[i];
+                    let complate = data.complated[i];
+        
+                    /* List New Cart's Items*/
+                    this.addToDOM(val, complate, i);
+                }       
                 
                 //
-                qs(".panel").classList.add('hide');
+                if(qs("span.text") != null) 
+                    qs("span.text").classList.add('hide');
+            }else {
+                //
+                if(qs("span.text") != null) 
+                    qs("span.text").classList.remove('hide');
+            }            
+        }else {
+            //
+            if(qs("span.text") != null) 
+                qs("span.text").classList.remove('hide');
+        }
 
-            }
+    }
+
+    /**
+     * @param string status add || remove - cartta item durumu için uyarı mesajının ekle/kaldır durumunu ayarlamak için
+     */
+    itSeemsEmpty(status){
+        if(status === "add"){
+            if(qs("span.text") != null) qs("span.text").classList.remove('hide');
+        }else if(status === "remove"){
+            if(qs("span.text") != null) qs("span.text").classList.add('hide');
         }
     }
     
