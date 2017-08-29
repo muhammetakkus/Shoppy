@@ -6,25 +6,28 @@ let panelElements = document.querySelectorAll(".panel *");
 
 export default class Menu{
     constructor(){
+        //
         on(burgerMenu, 'click', () => {
             panel.classList.toggle('hide');
             console.log();
         });
 
-        on(document, 'click', (e) => {
-            //tıklanan şey .panel değilse ve .haburger classını'da içermiyorsa
-            if(e.target.nodeName === "HTML" || e.target.nodeName === "H4"){
-                if(!panel.classList.contains('hide')){
-                    panel.classList.add('hide');
-                }
-            }
-            
-            //console.log(panel.childNodes);
-            /* panelElements.forEach(function(elem) {
-                console.log(elem)
-            }, this); */
+        //.panel dışında bir şeye tıklandığında .panel hide olsun nasıl deriz? bu yöntem ne kadar doğru?
+        //1- .panel içerisindeki bütün elementleri seç
+        //2- document nesnesini kontrol et click olduğunda eğer içerisinden biri veya kendisi(.panel) tıklandıysa status 1 olsun
+        //status 1 ise panel kapanmasın 0 ise kapansın
+        on(document, 'click', function(el){
+            let status = 0;
 
-           
-        })
+            panelElements.forEach(function(element) {
+                if(el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger')){
+                    status = 1;
+                }
+            }, this);
+
+            if(status == 0){
+                panel.classList.add('hide');
+            }
+        });
     }
 }

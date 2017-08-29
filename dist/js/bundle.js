@@ -156,11 +156,123 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _localStorage = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
+
+var _localStorage = __webpack_require__(3);
 
 var _localStorage2 = _interopRequireDefault(_localStorage);
 
-var _view = __webpack_require__(3);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var lStore = new _localStorage2.default();
+
+var View = function () {
+    function View() {
+        _classCallCheck(this, View);
+    }
+
+    _createClass(View, [{
+        key: 'addToDOM',
+
+        /* render(){
+              render function neden burada sıkıntı oldu???
+          }  */
+
+        /* Add to-do Item */
+        value: function addToDOM(text, complate, id) {
+            /* LIST */
+            var li = '<li ' + (complate == true ? "class=check" : "") + '>\n                    <input type="checkbox" id="' + id + '" class="to-do-checkbox" data-id="' + id + '" ' + (complate == true ? "checked" : "") + ' />\n                    <label for="' + id + '">\n                        <span class="to-do-text" data-id="' + id + '">' + text + '</span>\n                        <span class="done-line"></span>\n                    </label>\n                    <span class="delete" id="' + id + '">x</span>\n                  </li>';
+
+            /* li 'yi başa ekle */
+            (0, _helpers.qs)(".to-do-list").insertAdjacentHTML('afterbegin', li);
+        }
+
+        /* Clear to-do List Items */
+
+    }, {
+        key: 'clearList',
+        value: function clearList() {
+            var toDoListParent = (0, _helpers.qs)(".to-do-list");
+            while (toDoListParent.firstChild) {
+                //toDoListParent.removeChild(toDoListParent.firstChild);
+                toDoListParent.firstChild.remove();
+            }
+        }
+
+        /* Gelen To-Do objesini listeler */
+
+    }, {
+        key: 'listToDo',
+        value: function listToDo(data) {
+            //
+            (0, _helpers.qs)(".panel").classList.add('hide');
+
+            //
+            if (typeof data !== 'undefined') {
+                var count = data.todo.length;
+
+                if (count > 0) {
+                    for (var i = 0; i < count; i++) {
+                        /* */
+                        var val = data.todo[i];
+                        var complate = data.complated[i];
+
+                        /* List New Cart's Items*/
+                        this.addToDOM(val, complate, i);
+                    }
+
+                    //
+                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
+                } else {
+                    //
+                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
+                }
+            } else {
+                //
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
+            }
+        }
+
+        /**
+         * @param string status add || remove - cartta item durumu için uyarı mesajının ekle/kaldır durumunu ayarlamak için
+         */
+
+    }, {
+        key: 'itSeemsEmpty',
+        value: function itSeemsEmpty(status) {
+            if (status === "add") {
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
+            } else if (status === "remove") {
+                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
+            }
+        }
+    }]);
+
+    return View;
+}();
+
+exports.default = View;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _localStorage = __webpack_require__(3);
+
+var _localStorage2 = _interopRequireDefault(_localStorage);
+
+var _view = __webpack_require__(1);
 
 var _view2 = _interopRequireDefault(_view);
 
@@ -414,7 +526,7 @@ var Storage = function () {
 exports.default = Storage;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -476,118 +588,6 @@ var localStorage = function () {
 exports.default = localStorage;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _helpers = __webpack_require__(0);
-
-var _localStorage = __webpack_require__(2);
-
-var _localStorage2 = _interopRequireDefault(_localStorage);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var lStore = new _localStorage2.default();
-
-var View = function () {
-    function View() {
-        _classCallCheck(this, View);
-    }
-
-    _createClass(View, [{
-        key: 'addToDOM',
-
-        /* render(){
-              render function neden burada sıkıntı oldu???
-          }  */
-
-        /* Add to-do Item */
-        value: function addToDOM(text, complate, id) {
-            /* LIST */
-            var li = '<li ' + (complate == true ? "class=check" : "") + '>\n                    <input type="checkbox" id="' + id + '" class="to-do-checkbox" data-id="' + id + '" ' + (complate == true ? "checked" : "") + ' />\n                    <label for="' + id + '">\n                        <span class="to-do-text" data-id="' + id + '">' + text + '</span>\n                        <span class="done-line"></span>\n                    </label>\n                    <span class="delete" id="' + id + '">x</span>\n                  </li>';
-
-            /* li 'yi başa ekle */
-            (0, _helpers.qs)(".to-do-list").insertAdjacentHTML('afterbegin', li);
-        }
-
-        /* Clear to-do List Items */
-
-    }, {
-        key: 'clearList',
-        value: function clearList() {
-            var toDoListParent = (0, _helpers.qs)(".to-do-list");
-            while (toDoListParent.firstChild) {
-                //toDoListParent.removeChild(toDoListParent.firstChild);
-                toDoListParent.firstChild.remove();
-            }
-        }
-
-        /* Gelen To-Do objesini listeler */
-
-    }, {
-        key: 'listToDo',
-        value: function listToDo(data) {
-            //
-            (0, _helpers.qs)(".panel").classList.add('hide');
-
-            //
-            if (typeof data !== 'undefined') {
-                var count = data.todo.length;
-
-                if (count > 0) {
-                    for (var i = 0; i < count; i++) {
-                        /* */
-                        var val = data.todo[i];
-                        var complate = data.complated[i];
-
-                        /* List New Cart's Items*/
-                        this.addToDOM(val, complate, i);
-                    }
-
-                    //
-                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
-                } else {
-                    //
-                    if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
-                }
-            } else {
-                //
-                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
-            }
-        }
-
-        /**
-         * @param string status add || remove - cartta item durumu için uyarı mesajının ekle/kaldır durumunu ayarlamak için
-         */
-
-    }, {
-        key: 'itSeemsEmpty',
-        value: function itSeemsEmpty(status) {
-            if (status === "add") {
-                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.remove('hide');
-            } else if (status === "remove") {
-                if ((0, _helpers.qs)("span.text") != null) (0, _helpers.qs)("span.text").classList.add('hide');
-            }
-        }
-    }]);
-
-    return View;
-}();
-
-exports.default = View;
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -602,11 +602,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _helpers = __webpack_require__(0);
 
-var _storage = __webpack_require__(1);
+var _storage = __webpack_require__(2);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _view = __webpack_require__(3);
+var _view = __webpack_require__(1);
 
 var _view2 = _interopRequireDefault(_view);
 
@@ -902,7 +902,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* Render Storaged Data */
 (0, _render2.default)();
 
-/* Events - bu fonkiyonlar bir classın contructerında çalıştırılsa burası daha temiz olsa?*/
+/* Events - bu fonkiyonlar bir classın constructerında çalıştırılsa burası daha temiz olsa?*/
 var Event = new _event2.default();
 Event.onKeyPress();
 Event.checkEvent();
@@ -915,6 +915,26 @@ new _cart2.default();
 
 /* Menu Toggle */
 new _menu2.default();
+
+//bu storage daki getAll nereden nasıl çalışıyor sayfa açılışında?
+//deleteCart() -> eğer seçili kart siliniyorsa yeni seçilen carttaki to-do-itemler listelenirken toDoList() kullanılıyor burada sidebar hide oluyor
+//aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
+
+//menuye tekrar bakılacak
+//redesign
+
+/**
+ * JS WORK
+ * dökümantasyon
+ * */
+
+/* Kaynak kodu okuma trickleri */
+/**
+ * çok kullanılan düğüm noktaları bul oradan başla
+ * bir library inceleyeceksen eski sürümlerinden birine git ile ulaş onu oku ~ basic halinin okumak için
+ * dosya isimlerinden dosyaların bir biri ile ilişkisi düşünülebilir
+ * en çok bağımlılık olan dosyalara bakılabilir
+ */
 
 /***/ }),
 /* 6 */
@@ -930,15 +950,15 @@ exports.default = render;
 
 var _helpers = __webpack_require__(0);
 
-var _storage = __webpack_require__(1);
+var _storage = __webpack_require__(2);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _view = __webpack_require__(3);
+var _view = __webpack_require__(1);
 
 var _view2 = _interopRequireDefault(_view);
 
-var _localStorage = __webpack_require__(2);
+var _localStorage = __webpack_require__(3);
 
 var _localStorage2 = _interopRequireDefault(_localStorage);
 
@@ -997,11 +1017,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _helpers = __webpack_require__(0);
 
-var _storage = __webpack_require__(1);
+var _storage = __webpack_require__(2);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _view = __webpack_require__(3);
+var _view = __webpack_require__(1);
 
 var _view2 = _interopRequireDefault(_view);
 
@@ -1138,23 +1158,28 @@ var panelElements = document.querySelectorAll(".panel *");
 var Menu = function Menu() {
     _classCallCheck(this, Menu);
 
+    //
     (0, _helpers.on)(burgerMenu, 'click', function () {
         panel.classList.toggle('hide');
         console.log();
     });
 
-    (0, _helpers.on)(document, 'click', function (e) {
-        //tıklanan şey .panel değilse ve .haburger classını'da içermiyorsa
-        if (e.target.nodeName === "HTML" || e.target.nodeName === "H4") {
-            if (!panel.classList.contains('hide')) {
-                panel.classList.add('hide');
-            }
-        }
+    //.panel dışında bir şeye tıklandığında .panel hide olsun nasıl deriz? bu yöntem ne kadar doğru?
+    //1- .panel içerisindeki bütün elementleri seç
+    //2- document nesnesini kontrol et click olduğunda eğer içerisinden biri veya kendisi(.panel) tıklandıysa status 1 olsun
+    //status 1 ise panel kapanmasın 0 ise kapansın
+    (0, _helpers.on)(document, 'click', function (el) {
+        var status = 0;
 
-        //console.log(panel.childNodes);
-        /* panelElements.forEach(function(elem) {
-            console.log(elem)
-        }, this); */
+        panelElements.forEach(function (element) {
+            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger')) {
+                status = 1;
+            }
+        }, this);
+
+        if (status == 0) {
+            panel.classList.add('hide');
+        }
     });
 };
 
