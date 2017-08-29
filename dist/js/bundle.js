@@ -1156,26 +1156,27 @@ var panel = (0, _helpers.qs)(".panel");
 var panelElements = document.querySelectorAll(".panel *");
 
 var Menu = function Menu() {
+    var _this = this;
+
     _classCallCheck(this, Menu);
 
     //
     (0, _helpers.on)(burgerMenu, 'click', function () {
         panel.classList.toggle('hide');
-        console.log();
     });
 
     //.panel dışında bir şeye tıklandığında .panel hide olsun nasıl deriz? bu yöntem ne kadar doğru?
     //1- .panel içerisindeki bütün elementleri seç
-    //2- document nesnesini kontrol et click olduğunda eğer içerisinden biri veya kendisi(.panel) tıklandıysa status 1 olsun
-    //status 1 ise panel kapanmasın 0 ise kapansın
+    //2- document nesnesini kontrol et click olduğunda eğer içerisinden biri veya kendisi(.panel) veya '.hamburger' veya '.hamburger span' tıklandıysa status 1 olsun
+    //3- status 1 ise panel kapanmasın 0 ise kapansın
     (0, _helpers.on)(document, 'click', function (el) {
         var status = 0;
 
         panelElements.forEach(function (element) {
-            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger')) {
+            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger')) {
                 status = 1;
             }
-        }, this);
+        }, _this);
 
         if (status == 0) {
             panel.classList.add('hide');
