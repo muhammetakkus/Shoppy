@@ -634,7 +634,7 @@ var Events = function () {
                     /* Get to-do Value */
                     var toDoValue = input.value;
 
-                    if (toDoValue != "") {
+                    if (DB.getCurrentCart() && toDoValue != "") {
                         /* LAST ID */
                         var data = DB.getAll();
                         var id = data.todo.length;
@@ -659,7 +659,7 @@ var Events = function () {
                 /* Get to-do Value */
                 var toDoValue = input.value;
 
-                if (toDoValue != "") {
+                if (DB.getCurrentCart() && toDoValue != "") {
                     /* LAST ID */
                     var data = DB.getAll();
                     var id = data.todo.length;
@@ -929,8 +929,6 @@ new _menu2.default();
 //deleteCart() -> eğer seçili kart siliniyorsa yeni seçilen carttaki to-do-itemler listelenirken toDoList() kullanılıyor burada sidebar hide oluyor
 //aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
 
-//menuye tekrar bakılacak
-//redesign
 
 /**
  * JS WORK
@@ -982,11 +980,6 @@ function render() {
     {
       } */
 
-    //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
-    if (DB.getCartNames().length > 0) {
-        (0, _helpers.qs)('.create-cart-button-desktop').style.display = 'none';
-    }
-
     /* lStore.clear(); */
 
     console.log('mevcut cartlar: ' + DB.getCartNames());
@@ -995,7 +988,6 @@ function render() {
 
     /* Get and List the Data */
     var data = DB.getAll();
-    console.log(data);
     Views.listToDo(data);
 
     /* List Carts */
@@ -1008,6 +1000,14 @@ function render() {
             cart = '<li \n                        class=\'cart-item ' + (element == currentCart ? 'selected-cart' : '') + '\' \n                        cart-name=\'' + element + '\'>\n                        <span class=\'cart-text\'>' + element + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }, this);
+    }
+
+    //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
+    if (DB.getCartNames().length > 0) {
+        (0, _helpers.qs)('.create-cart-button-desktop').style.display = 'none';
+    } else {
+        //kart yoksa it seems empty görükmesin
+        Views.itSeemsEmpty("remove");
     }
 }
 
@@ -1182,7 +1182,7 @@ var Menu = function Menu() {
         var status = 0;
 
         panelElements.forEach(function (element) {
-            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger')) {
+            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger') || el.target.classList.contains('hamburger') || el.target.classList.contains('create-cart-button-desktop')) {
                 status = 1;
             }
         }, _this);

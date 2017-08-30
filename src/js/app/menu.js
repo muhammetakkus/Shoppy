@@ -19,7 +19,7 @@ export default class Menu{
             let status = 0;
 
             panelElements.forEach((element) => {
-                if(el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger')){
+                if(el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger') || el.target.classList.contains('hamburger') || el.target.classList.contains('create-cart-button-desktop')){
                     status = 1;
                 }
             }, this);

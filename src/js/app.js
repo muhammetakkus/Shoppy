@@ -31,8 +31,6 @@ new Menu();
 //deleteCart() -> eğer seçili kart siliniyorsa yeni seçilen carttaki to-do-itemler listelenirken toDoList() kullanılıyor burada sidebar hide oluyor
 //aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
 
-//menuye tekrar bakılacak
-//redesign
 
 /**
  * JS WORK

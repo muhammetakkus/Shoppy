@@ -16,7 +16,7 @@ export default class Events {
                 /* Get to-do Value */
                 let toDoValue = input.value;
                 
-                if (toDoValue != ""){
+                if (DB.getCurrentCart() && toDoValue != ""){
                     /* LAST ID */
                     let data = DB.getAll();
                     let id = data.todo.length;
@@ -41,8 +41,8 @@ export default class Events {
         on(addButton, 'click', function(){
             /* Get to-do Value */
             let toDoValue = input.value;
-        
-            if (toDoValue != "")
+            
+            if (DB.getCurrentCart() && toDoValue != "")
             {
                 /* LAST ID */
                 let data = DB.getAll();

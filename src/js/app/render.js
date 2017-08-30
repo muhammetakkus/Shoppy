@@ -13,12 +13,7 @@ export default function render(){
     {
 
     } */
-
-    //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
-    if(DB.getCartNames().length > 0){
-        qs('.create-cart-button-desktop').style.display = 'none';
-    }
-
+    
     /* lStore.clear(); */
     
     console.log('mevcut cartlar: '+DB.getCartNames());
@@ -27,7 +22,6 @@ export default function render(){
     
     /* Get and List the Data */
     let data = DB.getAll();
-    console.log(data);
     Views.listToDo(data);
 
     /* List Carts */
@@ -45,6 +39,14 @@ export default function render(){
                     </li>`;
             qs(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }, this);
+    }
+
+    //Eğer daha önce cart oluşturulmuşsa desktop'daki Create Cart butonu görünmesin
+    if(DB.getCartNames().length > 0){
+        qs('.create-cart-button-desktop').style.display = 'none';
+    }else {
+        //kart yoksa it seems empty görükmesin
+        Views.itSeemsEmpty("remove");
     }
 
 }
