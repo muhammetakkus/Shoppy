@@ -882,15 +882,13 @@ exports.default = Events;
 "use strict";
 
 
-var _helpers = __webpack_require__(0);
+var _render = __webpack_require__(6);
+
+var _render2 = _interopRequireDefault(_render);
 
 var _event = __webpack_require__(4);
 
 var _event2 = _interopRequireDefault(_event);
-
-var _render = __webpack_require__(6);
-
-var _render2 = _interopRequireDefault(_render);
 
 var _cart = __webpack_require__(7);
 
@@ -905,17 +903,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* Render Storaged Data */
 (0, _render2.default)();
 
-/* Events - bu fonkiyonlar bir classın constructerında çalıştırılsa burası daha temiz olsa?*/
+/* Events - bu fonkiyonlar bir classın constructerında çalıştırılsa burası daha temiz olsa? */
 var Event = new _event2.default();
+
 /* Add Item */
 Event.onKeyPress();
 Event.addButtonClick();
+
 /* Check Item */
 Event.checkEvent();
+
 /* Delete Item */
 Event.deleteEvent();
+
 /* Delete Cart */
 Event.deleteCart();
+
 /* Select Another Cart */
 Event.selectCart();
 
@@ -925,23 +928,12 @@ new _cart2.default();
 /* Menu Toggle */
 new _menu2.default();
 
-//bu storage daki getAll nereden nasıl çalışıyor sayfa açılışında?
-//deleteCart() -> eğer seçili kart siliniyorsa yeni seçilen carttaki to-do-itemler listelenirken toDoList() kullanılıyor burada sidebar hide oluyor
-//aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
+/*
+  deleteCart() -> eğer seçili kart siliniyorsa yeni seçilen carttaki to-do-itemler listelenirken toDoList() kullanılıyor burada sidebar hide oluyor
+  aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
+*/
 
-
-/**
- * JS WORK
- * dökümantasyon
- * */
-
-/* Kaynak kodu okuma trickleri */
-/**
- * çok kullanılan düğüm noktaları bul oradan başla
- * bir library inceleyeceksen eski sürümlerinden birine git ile ulaş onu oku ~ basic halinin okumak için
- * dosya isimlerinden dosyaların bir biri ile ilişkisi düşünülebilir
- * en çok bağımlılık olan dosyalara bakılabilir
- */
+//Firebase Integration
 
 /***/ }),
 /* 6 */
