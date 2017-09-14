@@ -933,6 +933,14 @@ new _menu2.default();
   aynı şekilde selectCart yapıldığında cart itemleri boş ise toDoList() fonks. çalıştırılmıyor item varsa çalışınca sidebar hide oluyor
 */
 
+/*
+x.addEventListener('click', xFunction);
+function xFunction(e){
+	//tıklanan şey input değilse boş geç - yani bir tıklamada birden çok element yakalanırsa sadece inputu kayda alır
+	if(e.target.matches('input')) return; 
+}
+*/
+
 //Firebase Integration
 
 /***/ }),
@@ -1157,27 +1165,26 @@ var panel = (0, _helpers.qs)(".panel");
 var panelElements = document.querySelectorAll(".panel *");
 
 var Menu = function Menu() {
-    var _this = this;
-
     _classCallCheck(this, Menu);
 
     //
-    (0, _helpers.on)(burgerMenu, 'click', function () {
+    (0, _helpers.on)(burgerMenu, 'click', function (e) {
         panel.classList.toggle('hide');
     });
 
-    //.panel dışında bir şeye tıklandığında .panel hide olsun nasıl deriz? bu yöntem ne kadar doğru?
+    //.panel dışında bir şeye tıklandığında .panel hide olsun nasıl deriz? bu yöntem ne kadar doğru? bunun daha kısa yolu olmalı?
     //1- .panel içerisindeki bütün elementleri seç
     //2- document nesnesini kontrol et click olduğunda eğer içerisinden biri veya kendisi(.panel) veya '.hamburger' veya '.hamburger span' tıklandıysa status 1 olsun
     //3- status 1 ise panel kapanmasın 0 ise kapansın
     (0, _helpers.on)(document, 'click', function (el) {
-        var status = 0;
+        el.target.nodeName === "HTML" ? panel.classList.add('hide') : null;
 
+        var status = 0;
         panelElements.forEach(function (element) {
-            if (el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.parentElement.classList.contains('hamburger') || el.target.classList.contains('hamburger') || el.target.classList.contains('create-cart-button-desktop')) {
+            if (el.target.classList && el.target.classList == element.classList || el.target.classList == "panel" || el.target.classList.contains('hamburger') || el.target.classList.contains('hamburger') || el.target.classList.contains('create-cart-button-desktop') || el.target.parentElement && el.target.parentElement.classList.contains('hamburger')) {
                 status = 1;
             }
-        }, _this);
+        });
 
         if (status == 0) {
             panel.classList.add('hide');
