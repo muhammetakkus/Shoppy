@@ -15,19 +15,19 @@ export default class Events {
             if (e.charCode === 13) {
                 /* Get to-do Value */
                 let toDoValue = input.value;
-                
+
                 if (DB.getCurrentCart() && toDoValue != ""){
                     /* LAST ID */
                     let data = DB.getAll();
                     let id = data.todo.length;
-                    
+
                     /* INSERT */
                     DB.addItem(toDoValue, id);
 
                     input.value = '';
 
                     //
-                    if(qs("span.text") != null) 
+                    if(qs("span.text") != null)
                         qs("span.text").classList.add('hide');
                 }
             }
@@ -41,25 +41,47 @@ export default class Events {
         on(addButton, 'click', function(){
             /* Get to-do Value */
             let toDoValue = input.value;
-            
+
+            /* if there is no cart */
+            if (DB.getCurrentCart() == undefined || DB.getCurrentCart() == '') {
+              qs('span.error').innerHTML = 'There is no selected cart. Please create or select a cart..'
+
+              /* animation thing */
+              setTimeout(function() {
+                qs('span.error').animate([
+                  { transform: 'rotate(0) scale(1)' },
+                  { transform: 'rotate(360deg) scale(0)' }
+                ], {
+                    duration: 1900,
+                    iterations: 1,
+                  })
+
+              }, 2500);
+
+              /* clear error text */
+              setTimeout(function() {
+                qs('span.error').innerHTML = ''
+              }, 3500);
+            }
+
             if (DB.getCurrentCart() && toDoValue != "")
             {
                 /* LAST ID */
                 let data = DB.getAll();
                 let id = data.todo.length;
-                
+
                 /* INSERT */
                 DB.addItem(toDoValue, id);
-    
+
                 input.value = '';
-    
+
                 //
-                if(qs("span.text") != null) 
+                if(qs("span.text") != null)
                     qs("span.text").classList.add('hide');
             }
         });
     }
-    
+
     checkEvent(){
         on(document, 'change', function(event){
             if(event.target && event.target.className === 'to-do-checkbox')
@@ -89,7 +111,7 @@ export default class Events {
     }
 
     /* Delete Item */
-    deleteEvent(){       
+    deleteEvent(){
         let toDoWrapper = qs('.to-do-list');
         on(toDoWrapper, 'click', function(event){
             if(event.target && event.target.className === 'delete')
@@ -106,11 +128,11 @@ export default class Events {
 
                         //remove element
                         event.target.parentElement.remove();
-                        
+
                         //It seems empty
                         let say = DB.getAll().todo.length;
                         if(say < 1)
-                            if(qs("span.text") != null) qs("span.text").classList.remove('hide');                    
+                            if(qs("span.text") != null) qs("span.text").classList.remove('hide');
                     }
                 }
             }
@@ -127,14 +149,14 @@ export default class Events {
         //cart.forEach(function(element) {
             on(cartsWrapper, 'click', (event) => {
                 if(event.target && event.target.classList.contains('cart-item') || event.target.className == "cart-text"){
-                    
+
                     //eğer tıklanan .cart-text ise cartName'i almak için parent li'ye ulaş
                     if(event.target.className == "cart-text"){
                         cartName = event.target.parentElement.getAttribute('cart-name');
                     }else{
                         cartName = event.target.getAttribute('cart-name');
                     }
-                    
+
                     //remove .selected-cart class from all cards which have .selected-cart class
                     document.querySelectorAll(".panel .carts li").forEach(function(item){
                         removeClass(item, "selected-cart");
@@ -172,9 +194,9 @@ export default class Events {
         //
         let cart = `<li class='cart-item selected-cart' cart-name='${name}'>
                         <span class='cart-text'>${name}</span>
-                        <span class='cart-delete'>x</span>    
+                        <span class='cart-delete'>x</span>
                     </li>`;
-        qs(".panel .carts").insertAdjacentHTML("afterbegin", cart);        
+        qs(".panel .carts").insertAdjacentHTML("afterbegin", cart);
     }
 
     /* Delete Cart */
@@ -190,7 +212,7 @@ export default class Events {
 
                     //
                     let delCart = DB.deleteCart(cartName);
-                    
+
                     //remove in DOM
                     if(delCart === true){
                         //
@@ -205,7 +227,7 @@ export default class Events {
 
                             //clear old to-do-items
                             Views.clearList();
-                            
+
                             //eğer silinen karttan sonra 1 den fazla kart kalmışsa
                             if(countAvailableCarts > 0){
                                 //son eklenen kartı currentCart yap
@@ -214,27 +236,27 @@ export default class Events {
 
                                 //list new selected cart
                                 Views.listToDo(DB.getAll());
-                                
+
                                 //Add .selected-cart Class
                                 addClass(qs(`ul.carts li[cart-name='${DB.getCurrentCart()}']`), "selected-cart");
                             }else {
                                 //
                                 qs('.create-cart-button-desktop').style.display = 'block';
-                                
+
                                 //remove It seems empty
                                 Views.itSeemsEmpty("remove");
 
                                 //
                                 DB.changeCurrentCart("");
-                            }  
-                        }                        
+                            }
+                        }
                     }
                 }
             }
         });
     }
 
-    
+
 
     inputFocus(element){
         let menuCartInput = qs(element);

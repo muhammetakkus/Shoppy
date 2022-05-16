@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "C:\\wamp64\\www\\Shoppy\\dist";
+/******/ 	__webpack_require__.p = "/var/www/Shoppy/dist";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 5);
@@ -659,6 +659,24 @@ var Events = function () {
                 /* Get to-do Value */
                 var toDoValue = input.value;
 
+                /* if there is no cart */
+                if (DB.getCurrentCart() == undefined || DB.getCurrentCart() == '') {
+                    (0, _helpers.qs)('span.error').innerHTML = 'There is no selected cart. Please create or select a cart..';
+
+                    /* animation thing */
+                    setTimeout(function () {
+                        (0, _helpers.qs)('span.error').animate([{ transform: 'rotate(0) scale(1)' }, { transform: 'rotate(360deg) scale(0)' }], {
+                            duration: 1900,
+                            iterations: 1
+                        });
+                    }, 2500);
+
+                    /* clear error text */
+                    setTimeout(function () {
+                        (0, _helpers.qs)('span.error').innerHTML = '';
+                    }, 3500);
+                }
+
                 if (DB.getCurrentCart() && toDoValue != "") {
                     /* LAST ID */
                     var data = DB.getAll();
@@ -788,7 +806,7 @@ var Events = function () {
             }
 
             //
-            var cart = '<li class=\'cart-item selected-cart\' cart-name=\'' + name + '\'>\n                        <span class=\'cart-text\'>' + name + '</span>\n                        <span class=\'cart-delete\'>x</span>    \n                    </li>';
+            var cart = '<li class=\'cart-item selected-cart\' cart-name=\'' + name + '\'>\n                        <span class=\'cart-text\'>' + name + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }
 
@@ -985,6 +1003,7 @@ function render() {
     console.log('mevcut cartlar: ' + DB.getCartNames());
     console.log('şu anki cart: ' + DB.getCurrentCart());
     console.log(DB.getAll());
+    console.log(lStore.getAll());
 
     /* Get and List the Data */
     var data = DB.getAll();
@@ -997,7 +1016,7 @@ function render() {
     if (countCart > 0) {
         var cart = void 0;
         carts.forEach(function (element) {
-            cart = '<li \n                        class=\'cart-item ' + (element == currentCart ? 'selected-cart' : '') + '\' \n                        cart-name=\'' + element + '\'>\n                        <span class=\'cart-text\'>' + element + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
+            cart = '<li\n                        class=\'cart-item ' + (element == currentCart ? 'selected-cart' : '') + '\'\n                        cart-name=\'' + element + '\'>\n                        <span class=\'cart-text\'>' + element + '</span>\n                        <span class=\'cart-delete\'>x</span>\n                    </li>';
             (0, _helpers.qs)(".panel .carts").insertAdjacentHTML("afterbegin", cart);
         }, this);
     }

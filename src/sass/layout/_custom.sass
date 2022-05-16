@@ -15,7 +15,7 @@ header nav
     padding: $padding
     h4
       color: #fff
-      cursor: default 
+      cursor: default
 
 /* MAIN */
 section.main
@@ -78,12 +78,17 @@ section.main
           z-index: 999
           left: -6px
 
-span.text
+span.text, span.error
   color: rgba(0, 0, 0, 0.3)
   display: block
   margin: 10px
   &.hide
     display: none
+
+span.error
+  color: rgba(255, 0, 0, 0.7)
+  font-size: .8rem
+  margin-bottom: 0
 
 /* PANEL */
 .panel

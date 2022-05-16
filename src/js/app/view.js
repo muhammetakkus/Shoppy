@@ -1,5 +1,5 @@
 
-import {qs,on,addClass} from './helpers'
+import {qs, on, addClass} from './helpers'
 import localStorage from './localStorage'
 
 
@@ -13,7 +13,7 @@ export default class View {
 
         render function neden burada sıkıntı oldu???
 
-    }  */   
+    }  */
 
     /* Add to-do Item */
     addToDOM(text, complate, id){
@@ -29,7 +29,7 @@ export default class View {
 
         /* li 'yi başa ekle */
         qs(".to-do-list").insertAdjacentHTML('afterbegin', li);
-    }   
+    }
 
     /* Clear to-do List Items */
     clearList(){
@@ -54,22 +54,22 @@ export default class View {
                     /* */
                     let val = data.todo[i];
                     let complate = data.complated[i];
-        
+
                     /* List New Cart's Items*/
                     this.addToDOM(val, complate, i);
-                }       
-                
+                }
+
                 //
-                if(qs("span.text") != null) 
+                if(qs("span.text") != null)
                     qs("span.text").classList.add('hide');
             }else {
                 //
-                if(qs("span.text") != null) 
+                if(qs("span.text") != null)
                     qs("span.text").classList.remove('hide');
-            }            
+            }
         }else {
             //
-            if(qs("span.text") != null) 
+            if(qs("span.text") != null)
                 qs("span.text").classList.remove('hide');
         }
 
@@ -81,9 +81,9 @@ export default class View {
     itSeemsEmpty(status){
         if(status === "add"){
             if(qs("span.text") != null) qs("span.text").classList.remove('hide');
-        }else if(status === "remove"){
+        } else if(status === "remove"){
             if(qs("span.text") != null) qs("span.text").classList.add('hide');
         }
     }
-    
+
 }

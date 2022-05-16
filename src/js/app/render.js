@@ -13,13 +13,14 @@ export default function render(){
     {
 
     } */
-    
+
     /* lStore.clear(); */
-    
-    console.log('mevcut cartlar: '+DB.getCartNames());
-    console.log('şu anki cart: '+DB.getCurrentCart());
+
+    console.log('mevcut cartlar: ' + DB.getCartNames());
+    console.log('şu anki cart: ' + DB.getCurrentCart());
     console.log(DB.getAll());
-    
+    console.log(lStore.getAll());
+
     /* Get and List the Data */
     let data = DB.getAll();
     Views.listToDo(data);
@@ -31,8 +32,8 @@ export default function render(){
     if(countCart > 0){
         let cart;
         carts.forEach(function(element) {
-            cart = `<li 
-                        class='cart-item ${(element == currentCart)?'selected-cart':''}' 
+            cart = `<li
+                        class='cart-item ${(element == currentCart)?'selected-cart':''}'
                         cart-name='${element}'>
                         <span class='cart-text'>${element}</span>
                         <span class='cart-delete'>x</span>
