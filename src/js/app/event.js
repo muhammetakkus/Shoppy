@@ -44,7 +44,7 @@ export default class Events {
 
             /* if there is no cart */
             if (DB.getCurrentCart() == undefined || DB.getCurrentCart() == '') {
-              qs('span.error').innerHTML = 'There is no selected cart. Please create or select a cart..'
+              qs('span.error').innerHTML = 'There is no selected Paper. Please create or select a Papper..'
 
               /* animation thing */
               setTimeout(function() {
