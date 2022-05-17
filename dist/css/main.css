@@ -110,10 +110,11 @@ section.main {
     position: relative;
     margin-top: 20px; }
     section.main .to-do-input-wrapper input.to-do-input {
-      display: block; }
+      display: block;
+      padding-right: 50px; }
     section.main .to-do-input-wrapper button {
       position: absolute;
-      top: -3px;
+      top: -2px;
       right: -12px;
       width: 52px;
       height: 52px;
@@ -262,5 +263,13 @@ span.error {
   color: rgba(0, 0, 0, 0.3);
   font-size: 18px;
   cursor: pointer; }
+
+/**/
+.cart-item {
+  display: flex;
+  justify-content: space-between; }
+
+*:focus {
+  outline: 0 !important; }
 
 /*# sourceMappingURL=main.css.map*/
