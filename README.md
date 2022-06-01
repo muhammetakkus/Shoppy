@@ -5,4 +5,4 @@ Basic to do list with ecmascript 6 - babel | sass | webpack
 npm install
 
 # Live Demo
-papers.surge.sh
+[papers.surge.sh](http://papers.surge.sh/)
